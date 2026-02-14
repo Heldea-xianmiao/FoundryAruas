@@ -91,3 +91,17 @@
 ## 许可证 (License)
 
 MIT License
+
+---
+
+## GitHub 项目设置说明
+
+已在仓库添加 CI 工作流：`.github/workflows/ci.yml`，该工作流会在 `push` 与 `pull_request` 到 `main/master` 时运行本地化 QA 与非破坏性 jQuery 扫描，并将生成的报告作为构件上传。请在 GitHub 仓库的 Actions 页面确认首次运行结果。
+
+若要在仓库页面显示 Action 状态徽章，请将下列 Markdown 添加到 README 的顶部（替换为你的仓库路径）：
+
+```
+[![CI](https://github.com/Heldea-xianmiao/FoundryAruas/actions/workflows/ci.yml/badge.svg)](https://github.com/Heldea-xianmiao/FoundryAruas/actions)
+```
+
+我已将本地更改推送到 `https://github.com/Heldea-xianmiao/FoundryAruas` 的 `master` 分支。
