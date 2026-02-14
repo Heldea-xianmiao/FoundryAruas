@@ -1,8 +1,8 @@
 {
   "id": "FoundryAuras",
   "title": "Foundry Auras",
-  "description": "仿照魔兽世界的WA那样，为用户提供可视化操作",
-  "version": "0.1.0",
+  "description": "仿照魔兽世界的WA，为用户提供可视化操作",
+  "version": "0.1.1",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
