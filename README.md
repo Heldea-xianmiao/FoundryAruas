@@ -105,3 +105,26 @@ MIT License
 ```
 
 我已将本地更改推送到 `https://github.com/Heldea-xianmiao/FoundryAruas` 的 `master` 分支。
+
+## Cooldowns 使用与测试
+
+模块提供了一个最小的冷却时间追踪 API，位于 `scripts/cooldowns.js`，以及演示脚本 `scripts/demo_cooldowns.js` 和手动测试脚本 `scripts/test_cooldowns_manual.js`。
+
+快速试用步骤（在 Foundry 控制台中执行）：
+
+1. 打开 Foundry 游戏并确保模块已启用，等待模块初始化完毕。
+2. 在控制台输入或粘贴以下命令运行演示脚本：
+
+```javascript
+// 在模块目录或控制台中执行
+await import('/modules/FoundryAuras/scripts/demo_cooldowns.js');
+```
+
+3. 手动测试（更彻底）：
+
+```javascript
+// 在模块目录或控制台中执行
+await import('/modules/FoundryAuras/scripts/test_cooldowns_manual.js');
+```
+
+说明：这些脚本设计为在 Foundry 环境中运行，它们会尝试查找当前选中 token 的 actor 并执行设置/查询/清理冷却的操作。如果在非 Foundry 环境运行，会记录错误信息。
