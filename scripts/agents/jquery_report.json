@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-02-14 22:46:30 (UTC+8)",
+  "patterns": ["$(",".find(",".parents(",".children("],
+  "matches": [
+    {"file":"main.js","pattern":".find("},
+    {"file":"scripts/agents/todo_runner.js","pattern":"$("},
+    {"file":"scripts/agents/todo_runner.js","pattern":".find("},
+    {"file":"scripts/api-docs.js","pattern":".find("},
+    {"file":"scripts/editor.js","pattern":".find("},
+    {"file":"scripts/manager.js","pattern":".find("}
+  ]
+}

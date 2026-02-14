@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-02-14 22:45:15 (UTC+8)",
+  "zhFile": "languages/zh-CN.json",
+  "enFile": "languages/en.json",
+  "missingInEn": [],
+  "missingInZh": [],
+  "summary": {
+    "zhOnly": 0,
+    "enOnly": 0
+  },
+  "notes": "Synchronized: missing keys copied from zh-CN.json to en.json."
+}

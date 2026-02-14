@@ -1,0 +1,464 @@
+<form class="wa-container" autocomplete="off">
+    <!-- LEFT SIDEBAR: LIST -->
+    <!-- 左侧边栏: 列表 -->
+    <aside class="wa-sidebar">
+        <header class="wa-sidebar-header">
+            <span style="font-weight: bold; padding-left: 5px;">Foundry Auras</span>
+            <div class="wa-header-actions">
+                <button type="button" class="wa-btn-icon" data-action="help" title="Tour / Help"><i class="fas fa-question-circle"></i></button>
+                <button type="button" class="wa-btn-icon" data-action="export-all" title="{{localize 'FOUNDRYAURAS.Manager.ExportAll'}}"><i class="fas fa-file-export"></i></button>
+                <button type="button" class="wa-btn-icon" data-action="import" title="{{localize 'FOUNDRYAURAS.Manager.Import'}}"><i class="fas fa-file-import"></i></button>
+                <button type="button" class="wa-btn-icon" data-action="create" title="{{localize 'FOUNDRYAURAS.Manager.New'}}"><i class="fas fa-plus"></i></button>
+            </div>
+        </header>
+        
+        <ul class="wa-aura-list">
+            <!-- LOADED SECTION -->
+            <!-- 已载入区域 -->
+            <li class="wa-group-header">{{localize "FOUNDRYAURAS.Group.Loaded"}}</li>
+            {{#each loadedAuras}}
+            <li class="wa-aura-item {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
+                <div class="wa-aura-item-content">
+                     <div class="wa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
+                     <div class="wa-aura-name">{{this.name}}</div>
+                </div>
+                
+                {{#if (eq this.id ../selectedAuraId)}}
+                <div class="wa-aura-controls">
+                    <div class="wa-control-row">
+                        <input type="text" class="wa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
+                    </div>
+                    <div class="wa-control-row buttons">
+                        <button type="button" class="wa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
+                        <button type="button" class="wa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Unload'}}"><i class="fas fa-eye-slash"></i></button>
+                        <button type="button" class="wa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
+                    </div>
+                </div>
+                {{/if}}
+            </li>
+            {{/each}}
+
+            <!-- NOT LOADED SECTION -->
+            <!-- 未载入区域 -->
+            {{#if unloadedAuras.length}}
+            <li class="wa-group-header">{{localize "FOUNDRYAURAS.Group.NotLoaded"}}</li>
+            {{#each unloadedAuras}}
+             <li class="wa-aura-item unloaded {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
+                <div class="wa-aura-item-content">
+                     <div class="wa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
+                     <div class="wa-aura-name">{{this.name}}</div>
+                </div>
+                
+                {{#if (eq this.id ../selectedAuraId)}}
+                <div class="wa-aura-controls">
+                    <div class="wa-control-row">
+                        <input type="text" class="wa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
+                    </div>
+                    <div class="wa-control-row buttons">
+                        <button type="button" class="wa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
+                        <button type="button" class="wa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Load'}}"><i class="fas fa-eye"></i></button>
+                         <button type="button" class="wa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
+                    </div>
+                </div>
+                {{/if}}
+            </li>
+            {{/each}}
+            {{/if}}
+
+            
+        </ul>
+    </aside>
+
+    <!-- RIGHT CONTENT: EDITOR -->
+    <!-- 右侧内容: 编辑器 -->
+    <main class="wa-main-container">
+        {{#if selectedAura}}
+            <div class="wa-editor-container">
+                <!-- TABS -->
+                <!-- 标签页 -->
+                <nav class="wa-tabs">
+                    <div class="wa-tab-item {{#if (eq activeTab 'display')}}active{{/if}}" data-tab="display">{{localize "FOUNDRYAURAS.Editor.Display"}}</div>
+                    <div class="wa-tab-item {{#if (eq activeTab 'trigger')}}active{{/if}}" data-tab="trigger">{{localize "FOUNDRYAURAS.Editor.Trigger"}}</div>
+                    <div class="wa-tab-item {{#if (eq activeTab 'conditions')}}active{{/if}}" data-tab="conditions">{{localize "FOUNDRYAURAS.Editor.Conditions"}}</div>
+                </nav>
+
+                <!-- SETTINGS PANELS -->
+                <!-- 设置面板 -->
+                <div class="wa-settings-panel">
+                    <div class="wa-settings-scroll">
+                
+                <!-- Common Header for all tabs (ID hidden but present) -->
+                <!-- 所有标签页的通用头部 (ID 隐藏但存在) -->
+                <input type="hidden" name="id" value="{{selectedAura.id}}"/>
+
+                {{#if (eq activeTab 'display')}}
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Common.Name"}}</label>
+                    <input type="text" name="name" value="{{selectedAura.name}}"/>
+                </div>
+
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.VisualType"}}</label>
+                    <select name="type">
+                        {{selectOptions visualTypes selected=selectedAura.type}}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.Text"}}</label>
+                    <input type="text" name="display.text" value="{{selectedAura.display.text}}"/>
+                    <p class="notes">{{localize "FOUNDRYAURAS.Editor.TextHint"}}</p>
+                </div>
+                
+                <!-- COMMON POSITION & SIZE -->
+                <div class="wa-group-box">
+                    <h4>{{localize "FOUNDRYAURAS.Editor.Style"}}</h4>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.Position"}}</label>
+                        <div class="flexrow">
+                             <input type="text" name="display.posX" value="{{selectedAura.display.posX}}" placeholder="X (50%)" class="short-input"/>
+                             <input type="text" name="display.posY" value="{{selectedAura.display.posY}}" placeholder="Y (50%)" class="short-input"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
+                        <div class="flexrow">
+                            <input type="number" name="display.width" value="{{selectedAura.display.width}}" placeholder="宽度 (px)" class="short-input" min="16" max="1000"/>
+                            <input type="number" name="display.height" value="{{selectedAura.display.height}}" placeholder="高度 (px)" class="short-input" min="16" max="1000"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.Opacity"}}</label>
+                        <input type="range" name="display.opacity" value="{{selectedAura.display.opacity}}" min="0" max="1" step="0.1"/>
+                    </div>
+                </div>
+
+                <!-- PROGRESS BAR SPECIFIC -->
+                {{#if (eq selectedAura.type 'progressbar')}}
+                <div class="wa-group-box">
+                    <h4>{{localize "FOUNDRYAURAS.Editor.ProgressBarSettings"}}</h4>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.BarColor"}}</label>
+                        <div class="flexrow">
+                            <input type="color" name="display.barColor" value="{{selectedAura.display.barColor}}"/>
+                            <input type="color" name="display.barBgColor" value="{{selectedAura.display.barBgColor}}"/>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+
+                <!-- ICON SPECIFIC -->
+                {{#if (eq selectedAura.type 'icon')}}
+                <div class="wa-group-box">
+                    <h4>{{localize "FOUNDRYAURAS.Editor.IconSettings"}}</h4>
+                    <div class="form-group">
+                         <label>{{localize "FOUNDRYAURAS.Editor.Icon"}}</label>
+                        <div class="flexrow">
+                            <file-picker type="imagevideo" target="display.icon" value="{{selectedAura.display.icon}}"></file-picker>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.DisplayMode"}}</label>
+                        <select name="display.mode">
+                            {{selectOptions displayModes selected=selectedAura.display.mode}}
+                        </select>
+                    </div>
+
+                    <!-- Display Mode Specific Settings -->
+                    {{#if (eq selectedAura.display.mode 'icon')}}
+                    <div class="wa-group-box">
+                        <h4>{{localize "FOUNDRYAURAS.DisplayMode.Icon"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
+                            <div class="flexrow">
+                                <input type="number" name="display.iconWidth" value="{{selectedAura.display.iconWidth}}" placeholder="Width (px)" class="short-input"/>
+                                <input type="number" name="display.iconHeight" value="{{selectedAura.display.iconHeight}}" placeholder="Height (px)" class="short-input"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.Animation"}}</label>
+                            <select name="display.iconAnimation">
+                                {{selectOptions animations selected=selectedAura.display.iconAnimation}}
+                            </select>
+                        </div>
+                        {{#if (ne selectedAura.display.iconAnimation "none")}}
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.AnimationOptions"}}</label>
+                            <div class="animation-options">
+                                {{#if (eq selectedAura.display.iconAnimation "anim-flash")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.FlashSpeed"}}</label>
+                                    <input type="range" name="display.iconAnimationOptions.flashSpeed" value="{{#if selectedAura.display.iconAnimationOptions.flashSpeed}}{{selectedAura.display.iconAnimationOptions.flashSpeed}}{{else}}1{{/if}}" min="0.1" max="5" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.iconAnimationOptions.flashSpeed}}{{selectedAura.display.iconAnimationOptions.flashSpeed}}{{else}}1{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                                {{#if (eq selectedAura.display.iconAnimation "anim-pulse")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.PulseSpeed"}}</label>
+                                    <input type="range" name="display.iconAnimationOptions.pulseSpeed" value="{{#if selectedAura.display.iconAnimationOptions.pulseSpeed}}{{selectedAura.display.iconAnimationOptions.pulseSpeed}}{{else}}2{{/if}}" min="0.5" max="10" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.iconAnimationOptions.pulseSpeed}}{{selectedAura.display.iconAnimationOptions.pulseSpeed}}{{else}}2{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                    {{/if}}
+
+                    {{#if (eq selectedAura.display.mode 'text')}}
+                    <div class="wa-group-box">
+                        <h4>{{localize "FOUNDRYAURAS.DisplayMode.Text"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
+                            <input type="number" name="display.textFontSize" value="{{selectedAura.display.textFontSize}}" placeholder="24"/>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.FontColor"}}</label>
+                            <input type="color" name="display.textFontColor" value="{{selectedAura.display.textFontColor}}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.Animation"}}</label>
+                            <select name="display.textAnimation">
+                                {{selectOptions animations selected=selectedAura.display.textAnimation}}
+                            </select>
+                        </div>
+                        {{#if (ne selectedAura.display.textAnimation "none")}}
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.AnimationOptions"}}</label>
+                            <div class="animation-options">
+                                {{#if (eq selectedAura.display.textAnimation "anim-flash")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.FlashSpeed"}}</label>
+                                    <input type="range" name="display.textAnimationOptions.flashSpeed" value="{{#if selectedAura.display.textAnimationOptions.flashSpeed}}{{selectedAura.display.textAnimationOptions.flashSpeed}}{{else}}1{{/if}}" min="0.1" max="5" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.textAnimationOptions.flashSpeed}}{{selectedAura.display.textAnimationOptions.flashSpeed}}{{else}}1{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                                {{#if (eq selectedAura.display.textAnimation "anim-pulse")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.PulseSpeed"}}</label>
+                                    <input type="range" name="display.textAnimationOptions.pulseSpeed" value="{{#if selectedAura.display.textAnimationOptions.pulseSpeed}}{{selectedAura.display.textAnimationOptions.pulseSpeed}}{{else}}2{{/if}}" min="0.5" max="10" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.textAnimationOptions.pulseSpeed}}{{selectedAura.display.textAnimationOptions.pulseSpeed}}{{else}}2{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                    {{/if}}
+
+                    {{#if (eq selectedAura.display.mode 'both')}}
+                    <div class="wa-group-box">
+                        <h4>{{localize "FOUNDRYAURAS.DisplayMode.Both"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
+                            <div class="flexrow">
+                                <input type="number" name="display.bothWidth" value="{{selectedAura.display.bothWidth}}" placeholder="Width (px)" class="short-input"/>
+                                <input type="number" name="display.bothHeight" value="{{selectedAura.display.bothHeight}}" placeholder="Height (px)" class="short-input"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
+                            <input type="number" name="display.bothFontSize" value="{{selectedAura.display.bothFontSize}}" placeholder="24"/>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.FontColor"}}</label>
+                            <input type="color" name="display.bothFontColor" value="{{selectedAura.display.bothFontColor}}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.Animation"}}</label>
+                            <select name="display.bothAnimation">
+                                {{selectOptions animations selected=selectedAura.display.bothAnimation}}
+                            </select>
+                        </div>
+                        {{#if (ne selectedAura.display.bothAnimation "none")}}
+                        <div class="form-group">
+                            <label>{{localize "FOUNDRYAURAS.Editor.AnimationOptions"}}</label>
+                            <div class="animation-options">
+                                {{#if (eq selectedAura.display.bothAnimation "anim-flash")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.FlashSpeed"}}</label>
+                                    <input type="range" name="display.bothAnimationOptions.flashSpeed" value="{{#if selectedAura.display.bothAnimationOptions.flashSpeed}}{{selectedAura.display.bothAnimationOptions.flashSpeed}}{{else}}1{{/if}}" min="0.1" max="5" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.bothAnimationOptions.flashSpeed}}{{selectedAura.display.bothAnimationOptions.flashSpeed}}{{else}}1{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                                {{#if (eq selectedAura.display.bothAnimation "anim-pulse")}}
+                                <div class="option-row">
+                                    <label>{{localize "FOUNDRYAURAS.Editor.PulseSpeed"}}</label>
+                                    <input type="range" name="display.bothAnimationOptions.pulseSpeed" value="{{#if selectedAura.display.bothAnimationOptions.pulseSpeed}}{{selectedAura.display.bothAnimationOptions.pulseSpeed}}{{else}}2{{/if}}" min="0.5" max="10" step="0.1"/>
+                                    <span class="range-value">{{#if selectedAura.display.bothAnimationOptions.pulseSpeed}}{{selectedAura.display.bothAnimationOptions.pulseSpeed}}{{else}}2{{/if}}s</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                    {{/if}}
+
+                    </div>
+                </div>
+                {{/if}}
+
+                <!-- TEXT SPECIFIC -->
+                {{#if (eq selectedAura.type 'text')}}
+                      <div class="wa-group-box">
+                          <h4>{{localize "FOUNDRYAURAS.Editor.TextSettings"}}</h4>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
+                        <input type="number" name="display.fontSize" value="{{selectedAura.display.fontSize}}" placeholder="24"/>
+                    </div>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Editor.FontColor"}}</label>
+                        <input type="color" name="display.fontColor" value="{{selectedAura.display.fontColor}}"/>
+                    </div>
+                </div>
+                {{/if}}
+                
+                <!-- Audio trigger removed per user request -->
+                {{/if}}
+
+                {{#if (eq activeTab 'trigger')}}
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.TriggerType"}}</label>
+                    <select name="trigger.type">
+                        {{selectOptions triggerTypes selected=selectedAura.trigger.type}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.TriggerEvent"}}</label>
+                    <select name="trigger.event">
+                        {{selectOptions events selected=selectedAura.trigger.event}}
+                    </select>
+                </div>
+                
+                <hr style="border-color: #444; margin: 15px 0;">
+                
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.Target"}}</label>
+                    <select name="targetMode">
+                        {{selectOptions targets selected=selectedAura.targetMode}}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{localize "FOUNDRYAURAS.Editor.Mode"}}</label>
+                    <select name="triggerMode">
+                        {{selectOptions modes selected=selectedAura.triggerMode}}
+                    </select>
+                </div>
+                {{/if}}
+
+                {{#if (eq activeTab 'conditions')}}
+                
+                {{#if (eq selectedAura.triggerMode 'simple')}}
+                    <!-- SIMPLE EDITOR UI -->
+                     <p class="notes" style="color:#ffcc00; margin-bottom:10px;">{{localize "FOUNDRYAURAS.Mode.Simple"}}</p>
+                     
+                     <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Simple.Property"}}</label>
+                        <select name="simpleCondition.prop">
+                            {{selectOptions simpleProps selected=selectedAura.simpleCondition.prop}}
+                        </select>
+                     </div>
+
+                     <!-- Dynamic fields based on Property ideally, but flat for now -->
+                     {{#if (eq selectedAura.simpleCondition.prop 'hp')}}
+                         <div class="form-group flexrow">
+                            <label style="flex:0.5">{{localize "FOUNDRYAURAS.Simple.Operator"}}</label>
+                            <select name="simpleCondition.operator" style="flex:1">
+                                {{selectOptions operators selected=selectedAura.simpleCondition.operator}}
+                            </select>
+                         </div>
+                         <div class="form-group flexrow">
+                            <label style="flex:0.5">{{localize "FOUNDRYAURAS.Simple.Value"}}</label>
+                            <input type="text" name="simpleCondition.value" value="{{selectedAura.simpleCondition.value}}" style="flex:1"/>
+                            <label style="flex:0 auto; padding: 0 5px;"> 
+                                <input type="checkbox" name="simpleCondition.percent" {{checked selectedAura.simpleCondition.percent}}/> %
+                            </label>
+                         </div>
+                     {{else}}
+                        {{#if (eq selectedAura.simpleCondition.prop 'effect')}}
+                             <div class="form-group">
+                                <label>{{localize "FOUNDRYAURAS.Simple.Value"}} (Effect ID/Name)</label>
+                                <input type="text" name="simpleCondition.value" value="{{selectedAura.simpleCondition.value}}"/>
+                             </div>
+                        {{else}}
+                            {{#if (eq selectedAura.simpleCondition.prop 'turn')}}
+                                 <div class="form-group">
+                                    <label>{{localize "FOUNDRYAURAS.Simple.Value"}} (true/false)</label>
+                                    <select name="simpleCondition.value">
+                                        {{selectOptions booleanOptions selected=selectedAura.simpleCondition.value}}
+                                    </select>
+                                 </div>
+                            {{else}}
+                                {{#if (eq selectedAura.simpleCondition.prop 'combat')}}
+                                     <div class="form-group">
+                                        <label>{{localize "FOUNDRYAURAS.Simple.Value"}} (in/out)</label>
+                                        <select name="simpleCondition.value">
+                                            {{selectOptions combatStates selected=selectedAura.simpleCondition.value}}
+                                        </select>
+                                     </div>
+                                {{else}}
+                                     <p class="notes">此属性无需额外参数</p>
+                                {{/if}}
+                            {{/if}}
+                        {{/if}}
+                     {{/if}}
+                     
+                {{else}}
+                    <!-- SCRIPT EDITOR WITH SIDEBAR -->
+                    <p class="notes">{{localize "FOUNDRYAURAS.Editor.ConditionsHint"}}</p>
+                    <div class="wa-script-container">
+                        <div class="wa-script-editor" style="display: flex; flex-direction: column; flex: 1;">
+                             <div class="wa-script-toolbar" style="margin-bottom: 5px; text-align: right;">
+                                <button type="button" class="wa-tiny-btn" data-action="save-script" style="display: inline-flex; width: auto; padding: 4px 10px; font-weight: bold; color: #4f4;"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.SaveScript"}}</button>
+                             </div>
+                             <textarea name="conditionScript" style="flex: 1; font-family: monospace; background: #111; color: #0f0; border: 1px solid #444;">{{selectedAura.conditionScript}}</textarea>
+                        </div>
+                        <div class="wa-script-helper">
+                            <div class="wa-helper-search">
+                                <input type="text" placeholder="Search API..." />
+                            </div>
+                            <ul class="wa-helper-list wa-aura-list"> <!-- Reuse scrollbar class -->
+                                {{#each apiDocs}}
+                                <li class="wa-helper-item" data-code="{{this.code}}">
+                                    <div class="wa-helper-name">{{this.name}}</div>
+                                    <div class="wa-helper-code">{{this.code}}</div>
+                                    <div style="color: #666; font-size: 9px; margin-top:2px;">{{this.group}}</div>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{/if}}
+
+           </div> <!-- /.wa-settings-scroll -->
+
+              <div class="wa-footer-actions">
+                  <button type="button" class="wa-tiny-btn wa-footer-save" data-action="save"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.Save"}}</button>
+                  <button type="button" class="wa-tiny-btn wa-footer-delete" data-action="delete"><i class="fas fa-trash"></i> {{localize "FOUNDRYAURAS.Manager.Delete"}}</button>
+              </div>
+
+              </div> <!-- /.wa-settings-panel -->
+              </div> <!-- /.wa-editor-container -->
+
+        {{else}}
+            <div class="wa-empty-state" style="flex-direction: column;">
+                <div style="margin-bottom: 20px;">{{localize "FOUNDRYAURAS.Manager.NewAura"}}</div>
+                
+                <div class="wa-preset-grid">
+                    {{#each presets}}
+                    <div class="wa-preset-item" data-preset="{{this.id}}">
+                        <div class="wa-preset-icon" style="background-image: url('{{this.data.display.icon}}')"></div>
+                        <div class="wa-preset-info">
+                            <div class="wa-preset-title">{{localize this.name}}</div>
+                            <div class="wa-preset-desc">{{localize this.description}}</div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+    </main>
+</form>

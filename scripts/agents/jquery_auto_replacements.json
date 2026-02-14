@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-14T14:57:04.651Z",
+  "changedFiles": [
+    "d:\\FVTT\\FVTT data\\Data\\modules\\dice-so-nice\\libs\\select2.min.js",
+    "d:\\FVTT\\FVTT data\\Data\\modules\\dice-so-nice\\main.js",
+    "d:\\FVTT\\FVTT data\\Data\\modules\\drakkenheim-rpg-styled-ui\\scripts\\rpg-ui.js",
+    "d:\\FVTT\\FVTT data\\Data\\modules\\lib-wrapper\\lib-wrapper.js"
+  ],
+  "candidates": [
+    {
+      "file": "d:\\FVTT\\FVTT data\\Data\\modules\\babele\\script\\on-demand-translate-dialog.js",
+      "match": "$('#actor-translate-log')",
+      "selector": "#actor-translate-log",
+      "contextAfter": ";\n                        area.append(`s"
+    },
+    {
+      "file": "d:\\FVTT\\FVTT data\\Data\\modules\\dice-so-nice\\main.js",
+      "match": "$(\"body\")",
+      "selector": "body",
+      "contextAfter": ")):$(\"#board\").after(this.canvas),this.c"
+    },
+    {
+      "file": "d:\\FVTT\\FVTT data\\Data\\modules\\dice-so-nice\\main.js",
+      "match": "$(\"#board\")",
+      "selector": "#board",
+      "contextAfter": ".after(this.canvas),this.canvas.width(r."
+    },
+    {
+      "file": "d:\\FVTT\\FVTT data\\Data\\modules\\lib-wrapper\\lib-wrapper.js",
+      "match": "$(\"input[type=hidden]\")",
+      "selector": "input[type=hidden]",
+      "contextAfter": ".remove(),LibWrapperSettings.showYesNoDi"
+    }
+  ]
+}

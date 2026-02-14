@@ -1,0 +1,40 @@
+name: FoundryAuras CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Run Localization QA
+        run: |
+          node scripts/agents/localization_qa.js || true
+
+      - name: Run jQuery scan (non-destructive)
+        run: |
+          node scripts/agents/jquery_scan_only.js
+
+      - name: List spec todos
+        run: |
+          node scripts/agents/todo_runner.js list || true
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundryaurs-reports
+          path: |
+            scripts/agents/localization_report.json
+            scripts/agents/jquery_scan_only_report.json
+            scripts/agents/jquery_auto_replacements_local.json

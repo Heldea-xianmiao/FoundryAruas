@@ -1,0 +1,9 @@
+{
+  "agents": [
+    "Foundry API Agent",
+    "Aura Engine Agent",
+    "Manager/UI Agent",
+    "Presets Agent",
+    "Localization Agent"
+  ]
+}

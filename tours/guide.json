@@ -1,0 +1,45 @@
+{
+    "id": "FoundryAuras.guide",
+    "title": "FOUNDRYAURAS.Tour.Title",
+    "description": "FOUNDRYAURAS.Tour.Description",
+    "canBeResumed": true,
+    "display": true,
+    "steps": [
+        {
+            "id": "welcome",
+            "selector": ".wa-container",
+            "title": "FOUNDRYAURAS.Tour.Step1.Title",
+            "content": "FOUNDRYAURAS.Tour.Step1.Content"
+        },
+        {
+            "id": "sidebar",
+            "selector": ".wa-sidebar",
+            "title": "FOUNDRYAURAS.Tour.Step2.Title",
+            "content": "FOUNDRYAURAS.Tour.Step2.Content"
+        },
+        {
+            "id": "presets",
+            "selector": "button[data-action='preset']",
+            "title": "FOUNDRYAURAS.Tour.Step3.Title",
+            "content": "FOUNDRYAURAS.Tour.Step3.Content"
+        },
+        {
+            "id": "editor-tabs",
+            "selector": ".wa-tabs",
+            "title": "FOUNDRYAURAS.Tour.Step4.Title",
+            "content": "FOUNDRYAURAS.Tour.Step4.Content"
+        },
+        {
+            "id": "scan",
+            "selector": "button[data-action='scan']",
+            "title": "FOUNDRYAURAS.Tour.Step5.Title",
+            "content": "FOUNDRYAURAS.Tour.Step5.Content"
+        },
+        {
+            "id": "save",
+            "selector": "button[type='submit']",
+            "title": "FOUNDRYAURAS.Tour.Step6.Title",
+            "content": "FOUNDRYAURAS.Tour.Step6.Content"
+        }
+    ]
+}

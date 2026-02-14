@@ -1,0 +1,40 @@
+{
+  "id": "FoundryAuras",
+  "title": "Foundry Auras",
+  "description": "仿照魔兽世界的WA那样，为用户提供可视化操作",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Xian_Miao",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "main.js"
+  ],
+  "styles": [
+    "styles.css"
+  ],
+  "tours": [
+    "tours/guide.json"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    },
+    {
+      "lang": "zh-CN",
+      "name": "中文 (Simplified)",
+      "path": "languages/zh-CN.json"
+    }
+  ],
+  "url": "",
+  "manifest": "",
+  "download": ""
+}

@@ -1,0 +1,358 @@
+<form class="flexcol">
+    <!-- General Settings -->
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Common.ID"}}</label>
+        <input type="text" name="id" value="{{aura.id}}" readonly/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Common.Name"}}</label>
+        <input type="text" name="name" value="{{aura.name}}"/>
+    </div>
+
+    <hr>
+    <h3>{{localize "FOUNDRYAURAS.Editor.Trigger"}}</h3>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.TriggerType"}}</label>
+        <select name="trigger.type">
+            <option value="event" {{#if (eq aura.trigger.type "event")}}selected{{/if}}>{{localize "FOUNDRYAURAS.TriggerType.Event"}}</option>
+            <option value="timer" {{#if (eq aura.trigger.type "timer")}}selected{{/if}}>{{localize "FOUNDRYAURAS.TriggerType.Timer"}}</option>
+            <option value="combat" {{#if (eq aura.trigger.type "combat")}}selected{{/if}}>{{localize "FOUNDRYAURAS.TriggerType.Combat"}}</option>
+            <option value="status" {{#if (eq aura.trigger.type "status")}}selected{{/if}}>{{localize "FOUNDRYAURAS.TriggerType.Status"}}</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.TriggerEvent"}}</label>
+        <select name="trigger.event">
+            {{selectOptions events selected=aura.trigger.event}}
+        </select>
+    </div>
+    
+    {{#if (eq aura.trigger.type "timer")}}
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.TimerDuration"}}</label>
+        <div class="flexrow">
+            <input type="number" name="trigger.duration" value="{{aura.trigger.duration}}" placeholder="5" min="0.1" max="300" step="0.1"/>
+            <span>{{localize "FOUNDRYAURAS.Units.Seconds"}}</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.TimerLoop"}}</label>
+        <input type="checkbox" name="trigger.loop" {{#if aura.trigger.loop}}checked{{/if}}/>
+    </div>
+    {{/if}}
+    
+    {{#if (eq aura.trigger.type "status")}}
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.StatusEffect"}}</label>
+        <input type="text" name="trigger.statusEffect" value="{{aura.trigger.statusEffect}}" placeholder="blessed, frightened, etc."/>
+    </div>
+    {{/if}}
+
+    <hr>
+    <h3>{{localize "FOUNDRYAURAS.Editor.Conditions"}}</h3>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.ConditionMode"}}</label>
+        <select name="conditionMode">
+            <option value="script" {{#if (eq aura.conditionMode "script")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Mode.Script"}}</option>
+            <option value="simple" {{#if (eq aura.conditionMode "simple")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Mode.Simple"}}</option>
+        </select>
+    </div>
+    
+    {{#if (eq aura.conditionMode "simple")}}
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Simple.Property"}}</label>
+        <select name="simpleCondition.property">
+            <option value="hp" {{#if (eq aura.simpleCondition.property "hp")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Prop.HP"}}</option>
+            <option value="mp" {{#if (eq aura.simpleCondition.property "mp")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Prop.MP"}}</option>
+            <option value="effect" {{#if (eq aura.simpleCondition.property "effect")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Prop.Effect"}}</option>
+            <option value="turn" {{#if (eq aura.simpleCondition.property "turn")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Prop.Turn"}}</option>
+            <option value="combat" {{#if (eq aura.simpleCondition.property "combat")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Prop.CombatState"}}</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Simple.Operator"}}</label>
+        <select name="simpleCondition.operator">
+            <option value="lt" {{#if (eq aura.simpleCondition.operator "lt")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.LT"}}</option>
+            <option value="lte" {{#if (eq aura.simpleCondition.operator "lte")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.LTE"}}</option>
+            <option value="gt" {{#if (eq aura.simpleCondition.operator "gt")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.GT"}}</option>
+            <option value="gte" {{#if (eq aura.simpleCondition.operator "gte")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.GTE"}}</option>
+            <option value="eq" {{#if (eq aura.simpleCondition.operator "eq")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.EQ"}}</option>
+            <option value="ne" {{#if (eq aura.simpleCondition.operator "ne")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.NE"}}</option>
+            <option value="contains" {{#if (eq aura.simpleCondition.operator "contains")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Op.Contains"}}</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Simple.Value"}}</label>
+        <input type="text" name="simpleCondition.value" value="{{aura.simpleCondition.value}}" placeholder="20"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Simple.CheckType"}}</label>
+        <select name="simpleCondition.checkType">
+            <option value="percent" {{#if (eq aura.simpleCondition.checkType "percent")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Simple.Percent"}}</option>
+            <option value="absolute" {{#if (eq aura.simpleCondition.checkType "absolute")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Simple.ValueAbs"}}</option>
+        </select>
+    </div>
+    {{else}}
+    <p class="notes">{{localize "FOUNDRYAURAS.Editor.ConditionsHint"}}</p>
+    <div class="form-group">
+        <textarea name="conditionScript" rows="10" style="font-family: monospace;">{{aura.conditionScript}}</textarea>
+    </div>
+    {{/if}}
+
+    <hr>
+    <h3>{{localize "FOUNDRYAURAS.Editor.Display"}}</h3>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Text"}}</label>
+        <input type="text" name="display.text" value="{{aura.display.text}}"/>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Icon"}}</label>
+        <div class="flexrow">
+            <input type="text" name="display.icon" value="{{aura.display.icon}}"/>
+            {{filePicker type="imagevideo" target="display.icon"}}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Audio"}}</label>
+        <div class="flexrow">
+            <input type="text" name="display.audio" value="{{aura.display.audio}}"/>
+            {{filePicker type="audio" target="display.audio"}}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.DisplayMode"}}</label>
+        <select name="display.mode">
+            <option value="both" {{#if (eq aura.display.mode "both")}}selected{{/if}}>{{localize "FOUNDRYAURAS.DisplayMode.Both"}}</option>
+            <option value="icon" {{#if (eq aura.display.mode "icon")}}selected{{/if}}>{{localize "FOUNDRYAURAS.DisplayMode.Icon"}}</option>
+            <option value="text" {{#if (eq aura.display.mode "text")}}selected{{/if}}>{{localize "FOUNDRYAURAS.DisplayMode.Text"}}</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
+        <div class="flexrow">
+            <input type="number" name="display.width" value="{{aura.display.width}}" placeholder="200" min="16" max="1000"/>
+            <span>x</span>
+            <input type="number" name="display.height" value="{{aura.display.height}}" placeholder="200" min="16" max="1000"/>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
+        <div class="flexrow">
+            <input type="number" name="display.fontSize" value="{{aura.display.fontSize}}" placeholder="24" min="8" max="72"/>
+            <span>px</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.FontColor"}}</label>
+        <input type="color" name="display.fontColor" value="{{aura.display.fontColor}}"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Opacity"}}</label>
+        <div class="flexrow">
+            <input type="range" name="display.opacity" 
+                   value="{{#if aura.display.opacity}}{{aura.display.opacity}}{{else}}1{{/if}}" 
+                   min="0" max="1" step="0.1"/>
+            <span class="range-value">{{#if aura.display.opacity}}{{aura.display.opacity}}{{else}}1{{/if}}</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.BorderColor"}}</label>
+        <input type="color" name="display.borderColor" value="{{aura.display.borderColor}}"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.BorderSize"}}</label>
+        <div class="flexrow">
+            <input type="number" name="display.borderSize" value="{{aura.display.borderSize}}" placeholder="0" min="0" max="20"/>
+            <span>px</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.BackgroundColor"}}</label>
+        <input type="color" name="display.backgroundColor" value="{{aura.display.backgroundColor}}"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.ShadowColor"}}</label>
+        <input type="color" name="display.shadowColor" value="{{aura.display.shadowColor}}"/>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.ShadowSize"}}</label>
+        <div class="flexrow">
+            <input type="number" name="display.shadowSize" value="{{aura.display.shadowSize}}" placeholder="0" min="0" max="50"/>
+            <span>px</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Rotation"}}</label>
+        <div class="flexrow">
+            <input type="range" name="display.rotation" 
+                   value="{{#if aura.display.rotation}}{{aura.display.rotation}}{{else}}0{{/if}}" 
+                   min="0" max="360" step="15"/>
+            <span class="range-value">{{#if aura.display.rotation}}{{aura.display.rotation}}{{else}}0{{/if}}°</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Scale"}}</label>
+        <div class="flexrow">
+            <input type="range" name="display.scale" 
+                   value="{{#if aura.display.scale}}{{aura.display.scale}}{{else}}1{{/if}}" 
+                   min="0.1" max="3" step="0.1"/>
+            <span class="range-value">{{#if aura.display.scale}}{{aura.display.scale}}{{else}}1{{/if}}x</span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Animation"}}</label>
+        <select name="display.animation">
+            <option value="none" {{#if (eq aura.display.animation "none")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationNone"}}</option>
+            <option value="anim-pulse" {{#if (eq aura.display.animation "anim-pulse")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationPulse"}}</option>
+            <option value="anim-spin" {{#if (eq aura.display.animation "anim-spin")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationSpin"}}</option>
+            <option value="anim-flash" {{#if (eq aura.display.animation "anim-flash")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationFlash"}}</option>
+            <option value="anim-bounce" {{#if (eq aura.display.animation "anim-bounce")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationBounce"}}</option>
+            <option value="anim-shake" {{#if (eq aura.display.animation "anim-shake")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationShake"}}</option>
+            <option value="anim-breath" {{#if (eq aura.display.animation "anim-breath")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationBreath"}}</option>
+            <option value="anim-glow" {{#if (eq aura.display.animation "anim-glow")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationGlow"}}</option>
+            <option value="anim-heartbeat" {{#if (eq aura.display.animation "anim-heartbeat")}}selected{{/if}}>{{localize "FOUNDRYAURAS.Editor.AnimationHeartbeat"}}</option>
+        </select>
+    </div>
+    
+    <!-- Animation Options - Show only when animation is selected -->
+    {{#if (ne aura.display.animation "none")}}
+    <div class="form-group animation-options" id="animation-options">
+        <label>{{localize "FOUNDRYAURAS.Editor.AnimationOptions"}}</label>
+        
+        {{#if (eq aura.display.animation "anim-flash")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.FlashSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.flashSpeed" 
+                  value="{{#if aura.display.animationOptions.flashSpeed}}{{aura.display.animationOptions.flashSpeed}}{{else}}1{{/if}}" 
+                  min="0.5" max="3" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.flashSpeed}}{{aura.display.animationOptions.flashSpeed}}{{else}}1{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-pulse")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.PulseSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.pulseSpeed" 
+                  value="{{#if aura.display.animationOptions.pulseSpeed}}{{aura.display.animationOptions.pulseSpeed}}{{else}}2{{/if}}" 
+                  min="0.5" max="5" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.pulseSpeed}}{{aura.display.animationOptions.pulseSpeed}}{{else}}2{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-spin")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.SpinSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.spinSpeed" 
+                  value="{{#if aura.display.animationOptions.spinSpeed}}{{aura.display.animationOptions.spinSpeed}}{{else}}4{{/if}}" 
+                  min="1" max="10" step="0.5"/>
+                <span class="range-value">{{#if aura.display.animationOptions.spinSpeed}}{{aura.display.animationOptions.spinSpeed}}{{else}}4{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-bounce")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.BounceSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.bounceSpeed" 
+                  value="{{#if aura.display.animationOptions.bounceSpeed}}{{aura.display.animationOptions.bounceSpeed}}{{else}}2{{/if}}" 
+                  min="0.5" max="5" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.bounceSpeed}}{{aura.display.animationOptions.bounceSpeed}}{{else}}2{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-shake")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.ShakeSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.shakeSpeed" 
+                  value="{{#if aura.display.animationOptions.shakeSpeed}}{{aura.display.animationOptions.shakeSpeed}}{{else}}0.5{{/if}}" 
+                  min="0.2" max="2" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.shakeSpeed}}{{aura.display.animationOptions.shakeSpeed}}{{else}}0.5{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-breath")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.BreathSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.breathSpeed" 
+                  value="{{#if aura.display.animationOptions.breathSpeed}}{{aura.display.animationOptions.breathSpeed}}{{else}}3{{/if}}" 
+                  min="1" max="8" step="0.5"/>
+                <span class="range-value">{{#if aura.display.animationOptions.breathSpeed}}{{aura.display.animationOptions.breathSpeed}}{{else}}3{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-glow")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.GlowSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.glowSpeed" 
+                  value="{{#if aura.display.animationOptions.glowSpeed}}{{aura.display.animationOptions.glowSpeed}}{{else}}2{{/if}}" 
+                  min="0.5" max="5" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.glowSpeed}}{{aura.display.animationOptions.glowSpeed}}{{else}}2{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{#if (eq aura.display.animation "anim-heartbeat")}}
+        <div class="form-group">
+            <label>{{localize "FOUNDRYAURAS.Editor.HeartbeatSpeed"}}</label>
+            <div class="flexrow">
+                <input type="range" name="display.animationOptions.heartbeatSpeed" 
+                  value="{{#if aura.display.animationOptions.heartbeatSpeed}}{{aura.display.animationOptions.heartbeatSpeed}}{{else}}1.3{{/if}}" 
+                  min="0.5" max="3" step="0.1"/>
+                <span class="range-value">{{#if aura.display.animationOptions.heartbeatSpeed}}{{aura.display.animationOptions.heartbeatSpeed}}{{else}}1.3{{/if}}Hz</span>
+            </div>
+        </div>
+        {{/if}}
+        
+    </div>
+    {{/if}}
+    
+    <div class="form-group">
+        <label>{{localize "FOUNDRYAURAS.Editor.Position"}}</label>
+        <div class="flexrow">
+             <input type="text" name="display.posX" value="{{aura.display.posX}}" placeholder="50%"/>
+             <input type="text" name="display.posY" value="{{aura.display.posY}}" placeholder="50%"/>
+        </div>
+    </div>
+
+    <footer class="sheet-footer flexrow">
+        <button type="submit">
+            <i class="far fa-save"></i> {{localize "FOUNDRYAURAS.Editor.Save"}}
+        </button>
+    </footer>
+</form>
