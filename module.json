@@ -34,7 +34,7 @@
       "path": "languages/zh-CN.json"
     }
   ],
-  "url": "",
-  "manifest": "",
-  "download": ""
+  "url": "https://github.com/Heldea-xianmiao/FoundryAruas",
+  "manifest": "https://raw.githubusercontent.com/Heldea-xianmiao/FoundryAruas/master/module.json",
+  "download": "https://github.com/Heldea-xianmiao/FoundryAruas/archive/refs/tags/v0.1.1.zip"
 }
