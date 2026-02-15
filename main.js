@@ -422,10 +422,11 @@ class AuraEngine {
             if (!entries.length) { container.style.display = 'none'; return; }
             container.style.display = 'block';
             for (const [key, obj] of entries) {
-                const rem = Math.max(0, Math.ceil((obj.expires - now) / 1000));
+                const remainingMs = Math.max(0, obj.expires - now);
                 const dur = obj.duration || 0;
-                // Compute percentage based on remaining / duration; ensure 0-100 and when duration==0 show 0
-                const pct = dur > 0 ? Math.max(0, Math.min(100, Math.round((rem / dur) * 100))) : 0;
+                const rem = Math.max(0, Math.ceil(remainingMs / 1000));
+                // Compute precise percentage based on milliseconds to avoid jumpy ceil-based artifacts
+                const pct = (dur > 0) ? Math.max(0, Math.min(100, (remainingMs / (dur * 1000)) * 100)) : 0;
                 const item = document.createElement('div');
                 item.className = 'fa-hud-cooldown-item';
                 item.style.display = 'flex';
@@ -451,7 +452,8 @@ class AuraEngine {
                             ico.style.backgroundSize = 'cover';
                             ico.style.borderRadius = '4px';
                             ico.style.border = '1px solid #333';
-                            item.insertBefore(ico, keyDiv);
+                            // Ensure icon is appended before text and bar so layout aligns
+                            item.appendChild(ico);
                         }
                     } catch (e) { /* ignore */ }
                 }
@@ -461,10 +463,13 @@ class AuraEngine {
                 barWrapper.style.pointerEvents = 'none';
                 const bg = document.createElement('div'); bg.className = 'fa-progress-bg'; bg.style.background = '#222'; bg.style.height = '12px';
                 const fill = document.createElement('div'); fill.className = 'fa-progress-fill'; fill.style.width = pct + '%'; fill.style.height = '12px'; fill.style.background = '#ffcc00';
+                // Smooth transition: ensure transitions are applied when JS updates widths
+                try { fill.style.transition = fill.style.transition || 'width 0.45s linear'; } catch(e) {}
                 bg.appendChild(fill);
                 const text = document.createElement('div'); text.className = 'fa-bar-text'; text.textContent = rem + 's'; text.style.color = '#fff'; text.style.fontSize = '11px';
                 barWrapper.appendChild(bg);
                 barWrapper.appendChild(text);
+                // Append key and bar after optional icon
                 item.appendChild(keyDiv);
                 item.appendChild(barWrapper);
                 list.appendChild(item);
