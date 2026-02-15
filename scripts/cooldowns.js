@@ -17,12 +17,14 @@ Hooks.once('ready', async () => {
   };
 
   // 定期清理过期冷却（每分钟一次）
+  // Periodically purge expired cooldowns (every minute)
   setInterval(() => {
     purgeExpired().catch(err => console.warn('Cooldown purge failed', err));
   }, 60_000);
 });
 
 // Helper: 是否启用全局持久化
+// Helper: Whether to use global persistent storage
 function _useGlobalStorage() {
   try {
     return !!game.settings.get('FoundryAuras', 'cooldowns.useGlobalStorage');
@@ -32,6 +34,7 @@ function _useGlobalStorage() {
 }
 
 // Helper: 获取模块全局映射对象
+// Helper: Get the module-level global mapping object
 function _getGlobalMapping() {
   try {
     return game.settings.get('FoundryAuras', 'cooldowns.globalStorage') || {};
@@ -61,6 +64,7 @@ async function _updateGlobalForActor(actor, cur) {
 }
 
 // 在 actor 删除时清理全局存储
+// Clean up global storage when an actor is deleted
 Hooks.on('deleteActor', async (actor) => {
   if (!_useGlobalStorage()) return;
   const map = _getGlobalMapping();
@@ -86,6 +90,7 @@ async function setCooldown(actorRef, key, seconds) {
   cur[key] = expires;
   await actor.setFlag('FoundryAuras', 'cooldowns', cur);
   // 可选：同步到模块全局存储，便于导出/诊断
+  // Optional: sync to module-level global storage for export/diagnostics
   try { await _updateGlobalForActor(actor, cur); } catch (e) { /* ignore */ }
   return expires;
 }
@@ -94,9 +99,11 @@ function getRemaining(actorRef, key) {
   const actor = (actorRef instanceof Actor) ? actorRef : (actorRef?.actor || null);
   if (!actor) return 0;
   // 优先从 actor flag 获取
+  // Prefer reading from the actor flag first
   const cur = (actor.getFlag('FoundryAuras', 'cooldowns') || {});
   let expires = cur?.[key];
   // 回退到全局存储（如果启用并且 actor flag 中未找到）
+  // Fallback to global storage if enabled and not found on actor flag
   if ((!expires || expires <= 0) && _useGlobalStorage()) {
     const map = _getGlobalMapping();
     const actorMap = map?.[actor.id] || {};
@@ -138,4 +145,5 @@ async function purgeExpired() {
 }
 
 // 导出模块（供打包或模块系统使用）
+// Export module functions for bundling or module systems
 export { setCooldown, getRemaining, isOnCooldown, consumeCooldown, purgeExpired };

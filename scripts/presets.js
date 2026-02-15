@@ -1,6 +1,7 @@
 // FoundryAuras - Preset Definitions
 // FoundryAuras - 预设模版定义
 // 为用户提供开箱即用的 FVTT 常用光环配置
+// Provide out-of-the-box FVTT presets for common aura configurations
 
 export const AURA_PRESETS = [
     {
