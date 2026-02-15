@@ -62,15 +62,19 @@ export class AuraManager extends FormApplication {
         let uiSelectedAura = null;
         if (selectedAura) {
             uiSelectedAura = foundry.utils.deepClone(selectedAura);
-            if (uiSelectedAura.display && uiSelectedAura.display.animationOptions) {
-                for (const k of Object.keys(uiSelectedAura.display.animationOptions)) {
-                    // 仅处理以 Speed 结尾或 animationOptions 的数值字段
-                    const val = parseFloat(uiSelectedAura.display.animationOptions[k]);
-                    if (!isNaN(val) && val > 0) {
-                        // 存储为持续时间（秒）时，UI 显示为频率 Hz = 1 / duration
-                        uiSelectedAura.display.animationOptions[k] = (1 / val).toFixed(2);
-                    } else {
-                        uiSelectedAura.display.animationOptions[k] = uiSelectedAura.display.animationOptions[k];
+            // 处理所有类型的动画选项
+            const animationOptionTypes = ['animationOptions', 'iconAnimationOptions', 'textAnimationOptions', 'bothAnimationOptions'];
+            for (const type of animationOptionTypes) {
+                if (uiSelectedAura.display && uiSelectedAura.display[type]) {
+                    for (const k of Object.keys(uiSelectedAura.display[type])) {
+                        // 仅处理以 Speed 结尾或 animationOptions 的数值字段
+                        const val = parseFloat(uiSelectedAura.display[type][k]);
+                        if (!isNaN(val) && val > 0) {
+                            // 存储为持续时间（秒）时，UI 显示为频率 Hz = 1 / duration
+                            uiSelectedAura.display[type][k] = (1 / val).toFixed(2);
+                        } else {
+                            uiSelectedAura.display[type][k] = uiSelectedAura.display[type][k];
+                        }
                     }
                 }
             }
@@ -233,7 +237,7 @@ export class AuraManager extends FormApplication {
         if (selectedAura && !selectedAura.display.posY) selectedAura.display.posY = "50%";
         if (selectedAura && !selectedAura.display.fontSize) selectedAura.display.fontSize = 24;
         if (selectedAura && !selectedAura.display.fontColor) selectedAura.display.fontColor = "#ffffff";
-        if (selectedAura && !selectedAura.display.opacity) selectedAura.display.opacity = 1;
+        if (selectedAura && selectedAura.display.opacity === undefined) selectedAura.display.opacity = 1;
         // Display mode specific defaults
         if (selectedAura && selectedAura.display.mode === "icon") {
             if (!selectedAura.display.iconWidth) selectedAura.display.iconWidth = 64;
@@ -254,7 +258,7 @@ export class AuraManager extends FormApplication {
             if (!selectedAura.display.bothAnimationOptions) selectedAura.display.bothAnimationOptions = {};
         }
         if (selectedAura && !selectedAura.display.fontColor) selectedAura.display.fontColor = "#ffffff";
-        if (selectedAura && !selectedAura.display.opacity) selectedAura.display.opacity = 1;
+        if (selectedAura && selectedAura.display.opacity === undefined) selectedAura.display.opacity = 1;
         if (selectedAura && !selectedAura.display.animationOptions) selectedAura.display.animationOptions = {};
         if (selectedAura && !selectedAura.display.borderColor) selectedAura.display.borderColor = "";
         if (selectedAura && !selectedAura.display.borderSize) selectedAura.display.borderSize = 0;
@@ -269,7 +273,7 @@ export class AuraManager extends FormApplication {
             loadedAuras: loadedAuras,
             unloadedAuras: unloadedAuras,
             selectedAuraId: this.selectedAuraId,
-            selectedAura: selectedAura,
+            selectedAura: uiSelectedAura || selectedAura,
             activeTab: this.activeTab,
             triggerTypes: triggerTypes,
             events: events,
@@ -766,72 +770,107 @@ export class AuraManager extends FormApplication {
         const hud = document.getElementById('foundry-auras-hud');
         if (hud) {
             hud.onmousedown = (e) => {
-                 const target = e.target.closest('.aura-display.fa-preview');
-                 if (!target) return;
-                 
-                 e.preventDefault(); 
-                 e.stopPropagation();
+                // Find the target aura element, even if clicking on a child
+                // 找到目标光环元素，即使点击的是子元素
+                let target = e.target.closest('.aura-display');
+                if (!target || !target.classList.contains('fa-preview')) return;
+                
+                e.preventDefault(); 
+                e.stopPropagation();
 
-                 const auraId = target.id.replace('aura-', '');
-                 
-                 // Update selection immediately if not already selected, but don't render yet
-                 // 如果还没选中，立即更新选择，但暂时不渲染
-                 const wasSelected = this.selectedAuraId === auraId;
-                 if (!wasSelected) {
-                     this.selectedAuraId = auraId;
-                     // Preview the selected aura to ensure only this one is shown
-                     // 预览选中的光环，确保只显示这一个
-                     if (globalThis.FoundryAuras?.engine) {
-                         globalThis.FoundryAuras.engine.previewAura(auraId);
-                     }
-                 }
+                const auraId = target.id.replace('aura-', '');
+                
+                // Get the container element (parent of target)
+                // 获取容器元素 (target 的父元素)
+                let container = target.parentNode;
+                
+                // If no container found, use the target itself
+                // 如果没有找到容器，使用目标元素本身
+                if (!container || container === hud) {
+                    // Create a container if it doesn't exist
+                    // 如果容器不存在，创建一个
+                    container = document.createElement('div');
+                    container.style.position = 'absolute';
+                    container.style.left = target.style.left || "50%";
+                    container.style.top = target.style.top || "50%";
+                    container.style.pointerEvents = 'auto';
+                    container.style.display = 'inline-block';
+                    container.style.width = 'auto';
+                    container.style.height = 'auto';
+                    
+                    // Move the target to the container
+                    // 将目标元素移动到容器中
+                    hud.removeChild(target);
+                    container.appendChild(target);
+                    hud.appendChild(container);
+                    
+                    // Update the activeAuras entry
+                    // 更新activeAuras条目
+                    if (globalThis.FoundryAuras?.engine) {
+                        globalThis.FoundryAuras.engine.activeAuras.set(auraId, container);
+                    }
+                }
+                
+                // Update selection immediately if not already selected, but don't render yet
+                // 如果还没选中，立即更新选择，但暂时不渲染
+                const wasSelected = this.selectedAuraId === auraId;
+                if (!wasSelected) {
+                    this.selectedAuraId = auraId;
+                    // Preview the selected aura to ensure only this one is shown
+                    // 预览选中的光环，确保只显示这一个
+                    if (globalThis.FoundryAuras?.engine) {
+                        globalThis.FoundryAuras.engine.previewAura(auraId);
+                    }
+                }
 
-                 // Drag logic
-                 // 拖拽逻辑
-                 const startX = e.clientX;
-                 const startY = e.clientY;
-                 
-                 // Get current position from element properties
-                 // 从元素属性获取当前位置
-                 const currentLeft = target.offsetLeft || 0;
-                 const currentTop = target.offsetTop || 0;
-                 
-                 const offsetX = startX - currentLeft;
-                 const offsetY = startY - currentTop;
+                // Drag logic
+                // 拖拽逻辑
+                const startX = e.clientX;
+                const startY = e.clientY;
+                
+                // Get current position from container properties
+                // 从容器属性获取当前位置
+                const currentLeft = container.offsetLeft || 0;
+                const currentTop = container.offsetTop || 0;
+                
+                const offsetX = startX - currentLeft;
+                const offsetY = startY - currentTop;
 
-                 const onMouseMove = (moveEvent) => {
-                     const newLeft = moveEvent.clientX - offsetX;
-                     const newTop = moveEvent.clientY - offsetY;
-                     target.style.left = newLeft + 'px';
-                     target.style.top = newTop + 'px';
-                 };
+                const onMouseMove = (moveEvent) => {
+                    const newLeft = moveEvent.clientX - offsetX;
+                    const newTop = moveEvent.clientY - offsetY;
+                    container.style.left = newLeft + 'px';
+                    container.style.top = newTop + 'px';
+                };
 
-                 const onMouseUp = async (upEvent) => {
-                     document.removeEventListener('mousemove', onMouseMove);
-                     document.removeEventListener('mouseup', onMouseUp);
-                     
-                     // Save new position first
-                     // 先保存新位置
-                     const finalLeft = target.style.left;
-                     const finalTop = target.style.top;
-                     
-                     const auras = game.settings.get("FoundryAuras", "auras");
-                     const aura = auras.find(a => a.id === auraId);
-                     if (aura) {
-                         aura.display.posX = finalLeft;
-                         aura.display.posY = finalTop;
-                         await game.settings.set("FoundryAuras", "auras", auras);
-                         // Settings change will trigger HUD recreation, but position is now saved
-                         // 设置变更会触发HUD重新创建，但位置已经保存
-                     }
-                     
-                     // No need to render - drag operation updated the aura position directly
-                     // 无需渲染 - 拖拽操作直接更新了光环位置
-                     // this.render();
-                 };
+                const onMouseUp = async (upEvent) => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    
+                    // Save new position first
+                    // 先保存新位置
+                    const finalLeft = container.style.left;
+                    const finalTop = container.style.top;
+                    
+                    const auras = game.settings.get("FoundryAuras", "auras");
+                    const aura = auras.find(a => a.id === auraId);
+                    if (aura) {
+                        // Ensure position values are properly formatted
+                        // 确保位置值格式正确
+                        aura.display.posX = finalLeft || "50%";
+                        aura.display.posY = finalTop || "50%";
+                        await game.settings.set("FoundryAuras", "auras", auras);
+                        // Settings change will trigger HUD recreation, but position is now saved
+                        // 设置变更会触发HUD重新创建，但位置已经保存
+                    }
+                    
+                    // No need to render - drag operation updated the aura position directly
+                    // 无需渲染 - 拖拽操作直接更新了光环位置
+                    // this.render();
+                };
 
-                 document.addEventListener('mousemove', onMouseMove);
-                 document.addEventListener('mouseup', onMouseUp);
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
             };
         }
     }
@@ -1080,14 +1119,21 @@ export class AuraManager extends FormApplication {
         if (!this.selectedAuraId) return;
         // 首先把 UI 提交的 animation speed (Hz) 转换回内部使用的 duration (秒)
         for (const key of Object.keys(formData)) {
-            // 仅处理 display.animationOptions.* 字段
-            if (key.startsWith('display.animationOptions.')) {
+            // 处理 display.animationOptions.*, display.iconAnimationOptions.*, display.textAnimationOptions.*, display.bothAnimationOptions.* 字段
+            if (key.startsWith('display.animationOptions.') || key.startsWith('display.iconAnimationOptions.') || key.startsWith('display.textAnimationOptions.') || key.startsWith('display.bothAnimationOptions.')) {
                 const v = parseFloat(formData[key]);
                 if (!isNaN(v)) {
                     // 防止除零或非常小的值
                     const speed = Math.max(v, 0.01);
                     const duration = 1 / speed;
                     formData[key] = String(duration);
+                }
+            }
+            // 处理不透明度值，确保它是数字
+            else if (key === 'display.opacity') {
+                const v = parseFloat(formData[key]);
+                if (!isNaN(v)) {
+                    formData[key] = v;
                 }
             }
         }
@@ -1100,7 +1146,7 @@ export class AuraManager extends FormApplication {
         const expanded = foundry.utils.expandObject(formData);
         
         // 将变更合并到现有对象中
-        foundry.utils.mergeObject(auras[index], expanded);
+        foundry.utils.mergeObject(auras[index], expanded, { recursive: true });
 
         await game.settings.set("FoundryAuras", "auras", auras);
         

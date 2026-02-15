@@ -230,7 +230,7 @@ class AuraEngine {
             if (!aura.display.height) aura.display.height = 64;
             if (!aura.display.fontSize) aura.display.fontSize = 24;
             if (!aura.display.fontColor) aura.display.fontColor = "#ffffff";
-            if (!aura.display.opacity) aura.display.opacity = 1;
+            if (aura.display.opacity === undefined) aura.display.opacity = 1;
             if (!aura.display.animationOptions) aura.display.animationOptions = {};
             if (!aura.display.borderColor) aura.display.borderColor = "";
             if (!aura.display.borderSize) aura.display.borderSize = 0;
@@ -694,13 +694,7 @@ class AuraEngine {
             hud.id = 'foundry-auras-hud';
             document.body.appendChild(hud);
         }
-        // If already shown, maybe update text/progress?
-        // 若已显示，尝试更新文本/进度条？
-        let auraDiv = document.getElementById(`aura-${aura.id}`);
-        
-        // For Progress Bars or Dynamic Text, we might need to update even if exists
-        // 对于进度条或动态文本，即使已存在也可能需要更新
-        
+        let auraDiv;
         // Localize and Parse text
         // 本地化并解析文本
         const rawText = game.i18n.localize(aura.display.text);
@@ -722,49 +716,12 @@ class AuraEngine {
         }
         const displayText = this.parseText(rawText, context);
 
-        if (auraDiv) {
-            // Update existing content
-            // 更新现有内容
-            const textEl = auraDiv.querySelector('.aura-text');
-            if (textEl) textEl.textContent = displayText;
-            
-            // Check HTML Video Loop
-            // 检查 HTML 视频循环状态
-            const videoEl = auraDiv.querySelector('video');
-            if (videoEl && videoEl.paused) {
-                videoEl.play().catch(err => {});
-            }
+        // Always create a new container when updating opacity
+        // 当更新不透明度时，始终创建一个新容器
+        // This ensures the opacity is applied correctly
 
-            // Update Progress Bar if applicable
-            // 更新进度条 (如果适用)
-                if (aura.type === 'progressbar') {
-                const fill = auraDiv.querySelector('.fa-progress-fill');
-                if (fill && context.actor) {
-                     // Try to auto-detect HP percentage for now
-                     // 暂时尝试自动检测 HP 百分比
-                     const hp = context.actor.system.attributes?.hp;
-                     if (hp && hp.max > 0) {
-                         const pct = Math.min(100, Math.max(0, (hp.value / hp.max) * 100));
-                         fill.style.width = `${pct}%`;
-                     } else if (context.max && context.value) {
-                         const pct = Math.min(100, Math.max(0, (context.value / context.max) * 100));
-                         fill.style.width = `${pct}%`;
-                     } else {
-                         fill.style.width = '100%'; // Default full
-                     }
-                }
-            }
-            return; 
-        }
 
-        // Play Audio (if exists and not preview)
-        // 播放音效 (如果存在且非预览模式)
-        if (!isPreview && aura.display.audio) {
-             AudioHelper.play({src: aura.display.audio, volume: 1.0, loop: false}, false);
-        }
 
-        auraDiv = document.createElement('div');
-        auraDiv.id = `aura-${aura.id}`;
         // Use mode-specific animation
         let animation = aura.display.animation;
         let animationOptions = aura.display.animationOptions || {};
@@ -780,13 +737,45 @@ class AuraEngine {
             animationOptions = aura.display.bothAnimationOptions || aura.display.animationOptions || {};
         }
         
-        auraDiv.className = `aura-display ${animation}`;
-        auraDiv.style.left = aura.display.posX;
-        auraDiv.style.top = aura.display.posY;
+        // Create a container for the aura
+        // 创建光环容器
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        // Ensure position values are not undefined
+        // 确保位置值不为 undefined
+        container.style.left = aura.display.posX || "50%";
+        container.style.top = aura.display.posY || "50%";
         
-        // Apply visual properties
-        // 应用视觉属性
-        if (aura.display.opacity !== undefined) auraDiv.style.opacity = aura.display.opacity;
+        // Apply opacity to the container
+        // 对容器应用不透明度
+        if (aura.display.opacity !== undefined && aura.display.opacity !== null) container.style.opacity = aura.display.opacity;
+        
+        // Make container clickable
+        // 让容器可点击
+        container.style.pointerEvents = 'auto';
+        container.style.display = 'inline-block';
+        container.style.zIndex = '10';
+        container.style.boxSizing = 'border-box';
+        container.style.margin = '0';
+        container.style.padding = '0';
+        
+        // Ensure the container has the same size as the auraDiv
+        // 确保容器与光环元素大小相同
+        container.style.width = 'auto';
+        container.style.height = 'auto';
+        container.style.overflow = 'visible';
+        
+        // Create the actual aura element with animation
+        // 创建带有动画的实际光环元素
+        auraDiv = document.createElement('div');
+        auraDiv.id = `aura-${aura.id}`;
+        auraDiv.className = `aura-display ${animation}`;
+        auraDiv.style.position = 'static';
+        auraDiv.style.left = '0';
+        auraDiv.style.top = '0';
+        auraDiv.style.margin = '0';
+        auraDiv.style.padding = '0';
+        auraDiv.style.boxSizing = 'border-box';
         if (aura.display.backgroundColor) auraDiv.style.backgroundColor = aura.display.backgroundColor;
         if (aura.display.borderColor) auraDiv.style.borderColor = aura.display.borderColor;
         if (aura.display.borderSize) auraDiv.style.borderWidth = aura.display.borderSize + 'px';
@@ -951,7 +940,18 @@ class AuraEngine {
         }
 
         this._attachInteraction(auraDiv, aura);
-        hud.appendChild(auraDiv);
+        
+        // Add aura to container
+        // 将光环添加到容器
+        container.appendChild(auraDiv);
+        
+        // Append container to HUD
+        // 将容器添加到 HUD
+        hud.appendChild(container);
+        
+        // Store the container instead of the auraDiv
+        // 存储容器而不是光环元素
+        this.activeAuras.set(aura.id, container);
     }
 
     _attachInteraction(element, aura) {
@@ -972,6 +972,10 @@ class AuraEngine {
         let isDragging = false;
         let isResizing = false;
 
+        // Get the container element (parent of element)
+        // 获取容器元素 (element 的父元素)
+        const container = element.parentNode;
+
         // DRAG
         element.addEventListener('mousedown', (e) => {
             if (e.target === handle) return;
@@ -981,18 +985,23 @@ class AuraEngine {
             
             const startX = e.clientX;
             const startY = e.clientY;
-            const startLeft = element.offsetLeft;
-            const startTop = element.offsetTop;
-            const parentW = element.offsetParent ? element.offsetParent.clientWidth : window.innerWidth;
-            const parentH = element.offsetParent ? element.offsetParent.clientHeight : window.innerHeight;
+            const startLeft = container ? container.offsetLeft : element.offsetLeft;
+            const startTop = container ? container.offsetTop : element.offsetTop;
+            const parentW = container ? container.offsetParent.clientWidth : (element.offsetParent ? element.offsetParent.clientWidth : window.innerWidth);
+            const parentH = container ? container.offsetParent.clientHeight : (element.offsetParent ? element.offsetParent.clientHeight : window.innerHeight);
 
             const onMouseMove = (moveEvent) => {
                 if (!isDragging) return;
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
                 
-                element.style.left = (startLeft + dx) + 'px';
-                element.style.top = (startTop + dy) + 'px';
+                if (container) {
+                    container.style.left = (startLeft + dx) + 'px';
+                    container.style.top = (startTop + dy) + 'px';
+                } else {
+                    element.style.left = (startLeft + dx) + 'px';
+                    element.style.top = (startTop + dy) + 'px';
+                }
             };
 
             const onMouseUp = () => {
@@ -1002,8 +1011,8 @@ class AuraEngine {
                 window.removeEventListener('mouseup', onMouseUp);
                 
                 // Update Inputs (Calc Percentage)
-                const newLeft = element.offsetLeft;
-                const newTop = element.offsetTop;
+                const newLeft = container ? container.offsetLeft : element.offsetLeft;
+                const newTop = container ? container.offsetTop : element.offsetTop;
                 
                 const pctX = ((newLeft / parentW) * 100).toFixed(1) + '%';
                 const pctY = ((newTop / parentH) * 100).toFixed(1) + '%';
@@ -1106,6 +1115,8 @@ class AuraEngine {
     hideAura(auraId) {
         const el = document.getElementById(`aura-${auraId}`);
         if (el) el.remove();
+        // Also remove from activeAuras map
+        this.activeAuras.delete(auraId);
     }
 
     // Clear all Auras
