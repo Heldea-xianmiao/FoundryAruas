@@ -118,6 +118,7 @@
                     <div class="fa-tab-item {{#if (eq activeTab 'display')}}active{{/if}}" data-tab="display">{{localize "FOUNDRYAURAS.Editor.Display"}}</div>
                     <div class="fa-tab-item {{#if (eq activeTab 'trigger')}}active{{/if}}" data-tab="trigger">{{localize "FOUNDRYAURAS.Editor.Trigger"}}</div>
                     <div class="fa-tab-item {{#if (eq activeTab 'conditions')}}active{{/if}}" data-tab="conditions">{{localize "FOUNDRYAURAS.Editor.Conditions"}}</div>
+                    <div class="fa-tab-item {{#if (eq activeTab 'cooldowns')}}active{{/if}}" data-tab="cooldowns">{{localize "FOUNDRYAURAS.Cooldowns.Title"}}</div>
                 </nav>
 
                 <!-- SETTINGS PANELS -->
@@ -354,6 +355,41 @@
                 <!-- Audio trigger removed per user request -->
                 {{/if}}
 
+                {{#if (eq activeTab 'cooldowns')}}
+                <div class="fa-group-box">
+                    <h4>{{localize "FOUNDRYAURAS.Cooldowns.Settings"}}</h4>
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Settings.Cooldowns.Enable.Name"}}</label>
+                        <div class="form-fields">
+                            <input type="checkbox" name="cooldowns.enabled" {{#if cooldowns.enabled}}checked{{/if}} />
+                            <p class="notes">{{localize "FOUNDRYAURAS.Settings.Cooldowns.Enable.Hint"}}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Name"}}</label>
+                        <div class="form-fields">
+                            <input type="checkbox" name="cooldowns.useGlobalStorage" {{#if cooldowns.useGlobalStorage}}checked{{/if}} />
+                            <p class="notes">{{localize "FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Hint"}}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{localize "FOUNDRYAURAS.Settings.Cooldowns.Mapping.Name"}}</label>
+                        <div class="form-fields">
+                            <textarea name="cooldowns.mapping">{{cooldowns.mapping}}</textarea>
+                            <p class="notes">{{localize "FOUNDRYAURAS.Settings.Cooldowns.Mapping.Hint"}}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-fields">
+                            <button class="fa-btn-icon" data-action="test-cooldowns" title="Test Cooldowns Mapping"><i class="fas fa-play"></i> {{localize "FOUNDRYAURAS.Settings.Cooldowns.TestButton"}}</button>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+
                 {{#if (eq activeTab 'trigger')}}
                 <div class="form-group">
                     <label>{{localize "FOUNDRYAURAS.Editor.TriggerType"}}</label>
@@ -488,7 +524,7 @@
                 <div class="fa-preset-grid">
                     {{#each presets}}
                     <div class="fa-preset-item" data-preset="{{this.id}}">
-                        <div class="fa-preset-icon" style="background-image: url('{{this.data.display.icon}}')"></div>
+                        <div class="fa-preset-icon" style="background-image: url('{{this.icon}}')"></div>
                         <div class="fa-preset-info">
                             <div class="fa-preset-title">{{localize this.name}}</div>
                             <div class="fa-preset-desc">{{localize this.description}}</div>

@@ -73,11 +73,11 @@ return (hp.value / hp.max) <= 0.2;`,
                 fontSize: 24,
                 fontColor: "#ffffff",
                 opacity: 1,
-                borderColor: "",
-                borderSize: 0,
-                backgroundColor: "",
-                shadowColor: "",
-                shadowSize: 0,
+                borderColor: "#ff0000",
+                borderSize: 2,
+                backgroundColor: "rgba(255, 0, 0, 0.1)",
+                shadowColor: "#ff0000",
+                shadowSize: 8,
                 rotation: 0,
                 scale: 1
             }
@@ -109,13 +109,13 @@ return combatant && combatant.actorId === actor.id;`,
                 width: 64,
                 height: 64,
                 fontSize: 24,
-                fontColor: "#ffffff",
+                fontColor: "#ffff00",
                 opacity: 1,
-                borderColor: "",
-                borderSize: 0,
-                backgroundColor: "",
-                shadowColor: "",
-                shadowSize: 0,
+                borderColor: "#ffff00",
+                borderSize: 2,
+                backgroundColor: "rgba(255, 255, 0, 0.1)",
+                shadowColor: "#ffff00",
+                shadowSize: 6,
                 rotation: 0,
                 scale: 1
             }
@@ -141,19 +141,19 @@ return actor.statuses?.has("invisible");`,
                 text: "Hidden", 
                 posX: "50%", 
                 posY: "80%", 
-                animation: "none", 
-                animationOptions: {},
+                animation: "anim-glow", 
+                animationOptions: { glowSpeed: 2 },
                 mode: "both",
                 width: 64,
                 height: 64,
                 fontSize: 24,
-                fontColor: "#ffffff",
-                opacity: 1,
-                borderColor: "",
-                borderSize: 0,
-                backgroundColor: "",
-                shadowColor: "",
-                shadowSize: 0,
+                fontColor: "#8888ff",
+                opacity: 0.8,
+                borderColor: "#8888ff",
+                borderSize: 1,
+                backgroundColor: "rgba(136, 136, 255, 0.1)",
+                shadowColor: "#8888ff",
+                shadowSize: 4,
                 rotation: 0,
                 scale: 1
             }
@@ -211,12 +211,170 @@ return hasBlessEffect || hasBlessStatus || hasBlessSpell;`,
                 opacity: 1,
                 borderColor: "#FFD700",
                 borderSize: 2,
-                backgroundColor: "",
+                backgroundColor: "rgba(255, 215, 0, 0.1)",
                 shadowColor: "#FFD700",
                 shadowSize: 8,
                 rotation: 0,
                 scale: 1
             }
         }
+    },
+    {
+        id: "cooldown-active",
+        name: "冷却时间警报",
+        description: "当技能或法术处于冷却状态时显示警报",
+        icon: "icons/svg/mystery-man.svg",
+        data: {
+            name: "冷却时间警报",
+            type: "icon",
+            trigger: { type: "event", event: "updateActor" },
+            conditionMode: "script",
+            conditionScript: `// Check if any cooldowns are active
+// 检查是否有冷却时间处于激活状态
+const cooldowns = actor.getFlag('FoundryAuras', 'cooldowns') || {};
+const now = Date.now();
+
+// Check if any cooldown is still active
+// 检查是否有冷却时间仍然激活
+for (const [key, value] of Object.entries(cooldowns)) {
+    const expires = typeof value === 'number' ? value : (value?.expires || 0);
+    if (expires > now) {
+        return true;
+    }
+}
+
+return false;`,
+            display: { 
+                icon: "icons/svg/mystery-man.svg", 
+                text: "冷却中", 
+                posX: "80%", 
+                posY: "20%", 
+                animation: "anim-pulse", 
+                animationOptions: { pulseSpeed: 1 },
+                mode: "both",
+                width: 56,
+                height: 56,
+                fontSize: 18,
+                fontColor: "#ff9900",
+                opacity: 0.8,
+                borderColor: "#ff9900",
+                borderSize: 1,
+                backgroundColor: "rgba(255, 153, 0, 0.2)",
+                shadowColor: "#ff9900",
+                shadowSize: 4,
+                rotation: 0,
+                scale: 1
+            }
+        }
+    },
+    {
+        id: "cooldown-ending",
+        name: "冷却即将结束",
+        description: "当冷却时间即将结束时显示提醒",
+        icon: "icons/svg/blood.svg",
+        data: {
+            name: "冷却即将结束",
+            type: "icon",
+            trigger: { type: "event", event: "updateActor" },
+            conditionMode: "script",
+            conditionScript: `// Check if any cooldown is about to end (less than 3 seconds remaining)
+// 检查是否有冷却时间即将结束（剩余时间少于3秒）
+const cooldowns = actor.getFlag('FoundryAuras', 'cooldowns') || {};
+const now = Date.now();
+const threshold = 3000; // 3 seconds
+
+// Check if any cooldown is ending soon
+// 检查是否有冷却时间即将结束
+for (const [key, value] of Object.entries(cooldowns)) {
+    const expires = typeof value === 'number' ? value : (value?.expires || 0);
+    if (expires > now && expires - now <= threshold) {
+        return true;
+    }
+}
+
+return false;`,
+            display: { 
+                icon: "icons/svg/blood.svg", 
+                text: "冷却结束", 
+                posX: "80%", 
+                posY: "30%", 
+                animation: "anim-bounce", 
+                animationOptions: { bounceSpeed: 1 },
+                mode: "both",
+                width: 56,
+                height: 56,
+                fontSize: 18,
+                fontColor: "#4CAF50",
+                opacity: 0.9,
+                borderColor: "#4CAF50",
+                borderSize: 1,
+                backgroundColor: "rgba(76, 175, 80, 0.2)",
+                shadowColor: "#4CAF50",
+                shadowSize: 6,
+                rotation: 0,
+                scale: 1
+            }
+        }
+    },
+    {
+        id: "cooldown-special",
+        name: "特殊技能冷却",
+        description: "监控特定技能的冷却时间",
+        icon: "icons/svg/combat.svg",
+        data: {
+            name: "特殊技能冷却",
+            type: "icon",
+            trigger: { type: "event", event: "updateActor" },
+            conditionMode: "script",
+            conditionScript: `// Check if specific important skills are on cooldown
+// 检查特定重要技能是否处于冷却状态
+const cooldowns = actor.getFlag('FoundryAuras', 'cooldowns') || {};
+const now = Date.now();
+
+// Define important skill keywords
+// 定义重要技能关键词
+const importantSkills = ['fireball', '火球', 'lightning', '闪电', 'teleport', '传送', 'wish', '愿望'];
+
+// Check if any important skill is on cooldown
+// 检查是否有重要技能处于冷却状态
+for (const [key, value] of Object.entries(cooldowns)) {
+    const keyLower = key.toLowerCase();
+    const expires = typeof value === 'number' ? value : (value?.expires || 0);
+    
+    if (expires > now) {
+        // Check if key contains any important skill keyword
+        // 检查键是否包含任何重要技能关键词
+        for (const skill of importantSkills) {
+            if (keyLower.includes(skill)) {
+                return true;
+            }
+        }
+    }
+}
+
+return false;`,
+            display: { 
+                icon: "icons/svg/combat.svg", 
+                text: "技能冷却", 
+                posX: "80%", 
+                posY: "40%", 
+                animation: "anim-spin", 
+                animationOptions: { spinSpeed: 2 },
+                mode: "both",
+                width: 56,
+                height: 56,
+                fontSize: 18,
+                fontColor: "#ff6b6b",
+                opacity: 0.8,
+                borderColor: "#ff6b6b",
+                borderSize: 1,
+                backgroundColor: "rgba(255, 107, 107, 0.2)",
+                shadowColor: "#ff6b6b",
+                shadowSize: 5,
+                rotation: 0,
+                scale: 1
+            }
+        }
     }
 ];
+

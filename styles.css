@@ -987,6 +987,84 @@ input[type="text"]:focus {
     box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
 }
 
+/* Cooldown Settings Tab Styling */
+.fa-group-box {
+    background-color: #252525;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 15px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.fa-group-box h4 {
+    color: #ffcc00;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Cooldown Mapping Textarea */
+.fa-settings-panel textarea[name="cooldowns.mapping"] {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: #0f0;
+    padding: 8px;
+    border-radius: 3px;
+    resize: vertical;
+    min-height: 200px;
+}
+
+.fa-settings-panel textarea[name="cooldowns.mapping"]:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
+}
+
+/* Cooldown Action Buttons */
+.fa-settings-panel button[data-action="test-cooldowns"] {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: #ffcc00;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.fa-settings-panel button[data-action="test-cooldowns"]:hover {
+    background-color: #333;
+    border-color: #ff9800;
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
+}
+
+/* Cooldown Form Fields */
+.fa-settings-panel .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fa-settings-panel .form-fields input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.fa-settings-panel .form-fields p.notes {
+    margin: 0;
+    color: #888;
+    font-size: 11px;
+    font-style: italic;
+}
+
 /* Animation options styling */
 .animation-options {
     margin-top: 10px;

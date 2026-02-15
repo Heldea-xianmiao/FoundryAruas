@@ -268,6 +268,12 @@ export class AuraManager extends FormApplication {
         if (selectedAura && !selectedAura.display.rotation) selectedAura.display.rotation = 0;
         if (selectedAura && !selectedAura.display.scale) selectedAura.display.scale = 1;
 
+        // Get cooldowns settings
+        // 获取冷却时间设置
+        const cooldownsEnabled = game.settings.get('FoundryAuras', 'cooldowns.enableIntegration');
+        const cooldownsUseGlobal = game.settings.get('FoundryAuras', 'cooldowns.useGlobalStorage');
+        const cooldownsMapping = game.settings.get('FoundryAuras', 'cooldowns.mapping');
+        
         return {
             auras: auras, // Raw list if needed
             loadedAuras: loadedAuras,
@@ -297,11 +303,13 @@ export class AuraManager extends FormApplication {
             presets: AURA_PRESETS,
             isDisplayTab: this.activeTab === "display",
             isTriggerTab: this.activeTab === "trigger",
+            isConditionsTab: this.activeTab === "conditions",
+            isCooldownsTab: this.activeTab === "cooldowns",
             isLoadTab: this.activeTab === "load"
             ,
             // Cooldowns context: 当前选中 token 的 actor 的冷却映射（供模板展示）
             cooldownsActorId: (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor?.id : (game.user.character?.id || null),
-            cooldowns: (() => {
+            cooldownsList: (() => {
                 try {
                     const aid = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor?.id : (game.user.character?.id || null);
                     if (!aid) return {};
@@ -311,6 +319,12 @@ export class AuraManager extends FormApplication {
                 } catch (e) { return {}; }
             })()
             ,
+            // Cooldowns settings
+            cooldowns: {
+                enabled: cooldownsEnabled,
+                useGlobalStorage: cooldownsUseGlobal,
+                mapping: JSON.stringify(cooldownsMapping, null, 2)
+            },
             // Whether to show cooldowns HUD (client setting)
             cooldownsShowHUD: game.settings.get('FoundryAuras','cooldowns.showHUD')
         };

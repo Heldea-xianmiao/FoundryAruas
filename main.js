@@ -399,11 +399,15 @@ class AuraEngine {
                 container.style.right = '12px';
                 container.style.pointerEvents = 'none';
                 container.style.zIndex = '350';
-                container.style.minWidth = '160px';
-                container.style.background = 'transparent';
+                container.style.minWidth = '200px';
+                container.style.background = 'rgba(0, 0, 0, 0.8)';
+                container.style.border = '1px solid #333';
+                container.style.borderRadius = '4px';
+                container.style.padding = '10px';
+                container.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.5)';
                 hud.appendChild(container);
             }
-            container.innerHTML = '<div class="fa-hud-cooldowns-title" style="color:#ffcc00;margin-bottom:6px;font-size:12px;font-weight:bold;">Cooldowns</div><div class="fa-hud-cooldowns-list"></div>';
+            container.innerHTML = '<div class="fa-hud-cooldowns-title" style="color:#ffcc00;margin-bottom:8px;font-size:14px;font-weight:bold;font-family:Consolas, monospace;">冷却时间</div><div class="fa-hud-cooldowns-list"></div>';
             this._cooldownHUDActorId = actor.id;
             // Ensure update loop
             if (!this._cooldownUpdateInterval) this._cooldownUpdateInterval = window.setInterval(() => this.updateCooldownsHUD(), 1000);
@@ -439,15 +443,9 @@ class AuraEngine {
                 item.className = 'fa-hud-cooldown-item';
                 item.style.display = 'flex';
                 item.style.alignItems = 'center';
-                item.style.gap = '8px';
-                item.style.marginBottom = '6px';
+                item.style.gap = '10px';
+                item.style.marginBottom = '8px';
                 item.style.pointerEvents = 'none';
-                const keyDiv = document.createElement('div');
-                keyDiv.className = 'cd-key';
-                keyDiv.textContent = key;
-                keyDiv.style.color = '#ddd';
-                keyDiv.style.fontSize = '12px';
-                keyDiv.style.flex = '1';
                 // If key indicates an item (item:Name), attempt to show the item's icon
                 if (key.startsWith('item:')) {
                     const itemName = key.substring(5);
@@ -455,26 +453,63 @@ class AuraEngine {
                         const found = actor.items.find(i => (i.name === itemName) || (i.name?.toLowerCase() === itemName?.toLowerCase()));
                         if (found && found.img) {
                             const ico = document.createElement('div');
-                            ico.className = 'fa-bar-icon';
+                            ico.className = 'fa-cooldown-icon';
+                            ico.style.width = '24px';
+                            ico.style.height = '24px';
                             ico.style.backgroundImage = `url('${found.img}')`;
                             ico.style.backgroundSize = 'cover';
                             ico.style.borderRadius = '4px';
-                            ico.style.border = '1px solid #333';
+                            ico.style.border = '1px solid #444';
+                            ico.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.5)';
                             // Ensure icon is appended before text and bar so layout aligns
                             item.appendChild(ico);
                         }
                     } catch (e) { /* ignore */ }
                 }
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'cd-key';
+                // Clean up key display
+                let displayKey = key;
+                if (key.startsWith('item:')) {
+                    displayKey = key.substring(5);
+                }
+                keyDiv.textContent = displayKey;
+                keyDiv.style.color = '#ddd';
+                keyDiv.style.fontSize = '12px';
+                keyDiv.style.fontFamily = 'Consolas, monospace';
+                keyDiv.style.flex = '1';
+                keyDiv.style.minWidth = '0';
+                keyDiv.style.whiteSpace = 'nowrap';
+                keyDiv.style.overflow = 'hidden';
+                keyDiv.style.textOverflow = 'ellipsis';
                 const barWrapper = document.createElement('div');
                 barWrapper.className = 'fa-progressbar-wrapper';
-                barWrapper.style.width = '140px';
+                barWrapper.style.width = '120px';
                 barWrapper.style.pointerEvents = 'none';
-                const bg = document.createElement('div'); bg.className = 'fa-progress-bg'; bg.style.background = '#222'; bg.style.height = '12px';
-                const fill = document.createElement('div'); fill.className = 'fa-progress-fill'; fill.style.width = pct + '%'; fill.style.height = '12px'; fill.style.background = '#ffcc00';
+                const bg = document.createElement('div'); 
+                bg.className = 'fa-progress-bg'; 
+                bg.style.background = '#222'; 
+                bg.style.height = '14px';
+                bg.style.borderRadius = '2px';
+                bg.style.border = '1px solid #444';
+                const fill = document.createElement('div'); 
+                fill.className = 'fa-progress-fill'; 
+                fill.style.width = pct + '%'; 
+                fill.style.height = '100%'; 
+                fill.style.background = '#ffcc00';
+                fill.style.borderRadius = '1px';
+                fill.style.boxShadow = '0 0 5px rgba(255, 204, 0, 0.5)';
                 // Smooth transition: ensure transitions are applied when JS updates widths
                 try { fill.style.transition = fill.style.transition || 'width 0.45s linear'; } catch(e) {}
                 bg.appendChild(fill);
-                const text = document.createElement('div'); text.className = 'fa-bar-text'; text.textContent = rem + 's'; text.style.color = '#fff'; text.style.fontSize = '11px';
+                const text = document.createElement('div'); 
+                text.className = 'fa-bar-text'; 
+                text.textContent = rem + 's'; 
+                text.style.color = '#fff'; 
+                text.style.fontSize = '11px';
+                text.style.fontFamily = 'Consolas, monospace';
+                text.style.textAlign = 'center';
+                text.style.marginTop = '2px';
                 barWrapper.appendChild(bg);
                 barWrapper.appendChild(text);
                 // Append key and bar after optional icon
