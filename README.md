@@ -1,5 +1,7 @@
 # Foundry Auras
 
+[快速跳转: Cooldowns 使用说明](#cooldowns-使用与测试)
+
 这是一个为 Foundry VTT 设计的模块，旨在模仿《魔兽世界》插件 WeakAuras (WA) 的功能和界面风格。即使在 Foundry VTT V13/V14 环境下，也能通过可视化的 IDE 管理界面，为角色和 Token 创建动态的视觉提示光环。
 
 ## 功能特性 (Features)
