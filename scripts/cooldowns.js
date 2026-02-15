@@ -87,11 +87,14 @@ async function setCooldown(actorRef, key, seconds) {
   if (!actor) throw new Error('Actor not found');
   const expires = Date.now() + Math.max(0, Math.floor(seconds)) * 1000;
   const cur = (actor.getFlag('FoundryAuras', 'cooldowns') || {});
-  cur[key] = expires;
+  // Store as object to preserve duration for progress UI: { expires: <ms>, duration: <s> }
+  cur[key] = { expires, duration: Math.max(0, Math.floor(seconds)) };
   await actor.setFlag('FoundryAuras', 'cooldowns', cur);
   // 可选：同步到模块全局存储，便于导出/诊断
   // Optional: sync to module-level global storage for export/diagnostics
   try { await _updateGlobalForActor(actor, cur); } catch (e) { /* ignore */ }
+  // Trigger a hook so UI can update
+  try { Hooks.call('FoundryAuras.cooldownsUpdated', actor.id, cur); } catch (e) { /* ignore */ }
   return expires;
 }
 
@@ -101,16 +104,20 @@ function getRemaining(actorRef, key) {
   // 优先从 actor flag 获取
   // Prefer reading from the actor flag first
   const cur = (actor.getFlag('FoundryAuras', 'cooldowns') || {});
-  let expires = cur?.[key];
+  let entry = cur?.[key];
+  // Support legacy numeric storage (timestamp)
+  if (typeof entry === 'number') entry = { expires: entry, duration: 0 };
   // 回退到全局存储（如果启用并且 actor flag 中未找到）
   // Fallback to global storage if enabled and not found on actor flag
-  if ((!expires || expires <= 0) && _useGlobalStorage()) {
+  if ((!entry || !entry.expires) && _useGlobalStorage()) {
     const map = _getGlobalMapping();
     const actorMap = map?.[actor.id] || {};
-    expires = actorMap?.[key] || expires;
+    let e = actorMap?.[key] || entry;
+    if (typeof e === 'number') e = { expires: e, duration: 0 };
+    entry = e || entry;
   }
-  if (!expires) return 0;
-  const rem = Math.ceil(Math.max(0, expires - Date.now()) / 1000);
+  if (!entry || !entry.expires) return 0;
+  const rem = Math.ceil(Math.max(0, entry.expires - Date.now()) / 1000);
   return rem;
 }
 
@@ -127,8 +134,10 @@ async function purgeExpired() {
   for (const a of game.actors.contents) {
     const cur = (a.getFlag('FoundryAuras', 'cooldowns') || {});
     let changed = false;
-    for (const [k, ts] of Object.entries(cur)) {
-      if (!ts || Date.now() >= ts) {
+    for (const [k, v] of Object.entries(cur)) {
+      // v may be {expires, duration} or legacy number
+      const expires = (typeof v === 'number') ? v : (v?.expires || 0);
+      if (!expires || Date.now() >= expires) {
         delete cur[k];
         changed = true;
       }
@@ -137,6 +146,7 @@ async function purgeExpired() {
       try {
         await a.setFlag('FoundryAuras', 'cooldowns', cur);
         try { await _updateGlobalForActor(a, cur); } catch (e) { /* ignore */ }
+        try { Hooks.call('FoundryAuras.cooldownsUpdated', a.id, cur); } catch (e) { /* ignore */ }
       } catch (e) {
         console.warn('Failed to purge cooldowns for actor', a.id, e);
       }

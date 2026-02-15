@@ -634,6 +634,23 @@ file-picker {
     z-index: 300; /* 提高 z-index，确保在管理器窗口之上显示光环 */
 }
 
+/* Cooldowns HUD (top-right overlay) */
+.fa-hud-cooldowns {
+    pointer-events: none;
+    background: rgba(0,0,0,0.35);
+    padding: 8px;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+.fa-hud-cooldowns-title { color: #ffcc00; font-size: 12px; font-weight: bold; margin-bottom:6px; }
+.fa-hud-cooldowns-list { display:flex; flex-direction:column; gap:6px; }
+.fa-hud-cooldown-item { display:flex; align-items:center; gap:8px; min-width: 200px; }
+.fa-hud-cooldown-item .cd-key { color:#ddd; font-size:12px; flex:1; }
+.fa-hud-cooldown-item .fa-progress-bg { flex:1; height:12px; background:#111; border:1px solid #333; overflow:hidden; }
+.fa-hud-cooldown-item .fa-progress-fill { height:12px; background:#ffcc00; transition: width 0.6s linear; }
+.fa-hud-cooldown-item .fa-bar-text { color:#fff; font-size:11px; margin-left:6px; min-width:36px; text-align:right; }
+
 /* 单个Aura的容器 */
 .aura-display {
     position: absolute;

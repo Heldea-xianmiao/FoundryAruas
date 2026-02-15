@@ -353,6 +353,8 @@ class AuraEngine {
         Hooks.on('controlToken', (token, controlled) => {
             if (controlled && token.actor) {
                 this.checkAuras("controlToken", token.actor);
+                // Render cooldown HUD for the newly controlled token's actor
+                try { this.renderCooldownsHUD(token.actor); } catch (e) { /* ignore */ }
             } else if (!controlled) {
                 // If deselected, strictly clean up Auras for that Token (depending on logic)
                 // For simplicity here, if no Token is currently controlled, hide all
@@ -360,9 +362,106 @@ class AuraEngine {
                 // 这里简单起见，如果当前没有控制任何 Token，可以隐藏
                 if (!canvas.tokens.controlled.length) {
                     this.clearAll();
+                    try { this.clearCooldownsHUD(); } catch (e) { /* ignore */ }
                 }
             }
         });
+
+        // Update HUD when cooldowns change
+        Hooks.on('FoundryAuras.cooldownsUpdated', (actorId, cur) => {
+            try {
+                // If the HUD is showing for this actor, refresh it
+                if (this._cooldownHUDActorId === actorId) this.updateCooldownsHUD();
+            } catch (e) { /* ignore */ }
+        });
+    }
+
+    // Render a simple cooldowns HUD for the given actor
+    renderCooldownsHUD(actor) {
+        try {
+            if (!actor) return this.clearCooldownsHUD();
+            const hud = document.getElementById('foundry-auras-hud');
+            if (!hud) return;
+            let container = hud.querySelector('.fa-hud-cooldowns');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'fa-hud-cooldowns';
+                container.style.position = 'absolute';
+                container.style.top = '12px';
+                container.style.right = '12px';
+                container.style.pointerEvents = 'none';
+                container.style.zIndex = '350';
+                container.style.minWidth = '160px';
+                container.style.background = 'transparent';
+                hud.appendChild(container);
+            }
+            container.innerHTML = '<div class="fa-hud-cooldowns-title" style="color:#ffcc00;margin-bottom:6px;font-size:12px;font-weight:bold;">Cooldowns</div><div class="fa-hud-cooldowns-list"></div>';
+            this._cooldownHUDActorId = actor.id;
+            // Ensure update loop
+            if (!this._cooldownUpdateInterval) this._cooldownUpdateInterval = window.setInterval(() => this.updateCooldownsHUD(), 1000);
+            this.updateCooldownsHUD();
+        } catch (e) { console.warn('FoundryAuras | renderCooldownsHUD error', e); }
+    }
+
+    updateCooldownsHUD() {
+        try {
+            const container = document.querySelector('#foundry-auras-hud .fa-hud-cooldowns');
+            if (!container) return;
+            const list = container.querySelector('.fa-hud-cooldowns-list');
+            list.innerHTML = '';
+            const actorId = this._cooldownHUDActorId;
+            if (!actorId) { container.style.display = 'none'; return; }
+            const actor = game.actors.get(actorId);
+            if (!actor) { container.style.display = 'none'; return; }
+            const cd = actor.getFlag('FoundryAuras', 'cooldowns') || {};
+            const now = Date.now();
+            const entries = Object.entries(cd).map(([k,v]) => {
+                if (typeof v === 'number') return [k, { expires: v, duration: 0 }];
+                return [k, v];
+            }).filter(([,v]) => v && v.expires && v.expires > now).sort((a,b) => a[1].expires - b[1].expires);
+            if (!entries.length) { container.style.display = 'none'; return; }
+            container.style.display = 'block';
+            for (const [key, obj] of entries) {
+                const rem = Math.max(0, Math.ceil((obj.expires - now) / 1000));
+                const dur = obj.duration || 0;
+                const pct = dur > 0 ? Math.max(0, Math.min(100, Math.round((rem / dur) * 100))) : 0;
+                const item = document.createElement('div');
+                item.className = 'fa-hud-cooldown-item';
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.gap = '8px';
+                item.style.marginBottom = '6px';
+                item.style.pointerEvents = 'none';
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'cd-key';
+                keyDiv.textContent = key;
+                keyDiv.style.color = '#ddd';
+                keyDiv.style.fontSize = '12px';
+                keyDiv.style.flex = '1';
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'fa-progressbar-wrapper';
+                barWrapper.style.width = '140px';
+                barWrapper.style.pointerEvents = 'none';
+                const bg = document.createElement('div'); bg.className = 'fa-progress-bg'; bg.style.background = '#222'; bg.style.height = '12px';
+                const fill = document.createElement('div'); fill.className = 'fa-progress-fill'; fill.style.width = pct + '%'; fill.style.height = '12px'; fill.style.background = '#ffcc00';
+                bg.appendChild(fill);
+                const text = document.createElement('div'); text.className = 'fa-bar-text'; text.textContent = rem + 's'; text.style.color = '#fff'; text.style.fontSize = '11px';
+                barWrapper.appendChild(bg);
+                barWrapper.appendChild(text);
+                item.appendChild(keyDiv);
+                item.appendChild(barWrapper);
+                list.appendChild(item);
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    clearCooldownsHUD() {
+        try {
+            const container = document.querySelector('#foundry-auras-hud .fa-hud-cooldowns');
+            if (container) container.remove();
+            if (this._cooldownUpdateInterval) { clearInterval(this._cooldownUpdateInterval); this._cooldownUpdateInterval = null; }
+            this._cooldownHUDActorId = null;
+        } catch (e) { /* ignore */ }
     }
 
     // Request #1: Preview Mode Logic
