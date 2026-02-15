@@ -306,6 +306,9 @@ export class AuraManager extends FormApplication {
                     return actor.getFlag('FoundryAuras','cooldowns') || {};
                 } catch (e) { return {}; }
             })()
+            ,
+            // Whether to show cooldowns HUD (client setting)
+            cooldownsShowHUD: game.settings.get('FoundryAuras','cooldowns.showHUD')
         };
     }
 
@@ -398,6 +401,24 @@ export class AuraManager extends FormApplication {
 
         // Item Selection
         // 项目选择
+
+        // Cooldowns HUD toggle in sidebar
+        const hudToggle = root.querySelector('.fa-cd-showhud');
+        if (hudToggle) {
+            hudToggle.addEventListener('change', async (ev) => {
+                try {
+                    const enabled = !!ev.target.checked;
+                    await game.settings.set('FoundryAuras', 'cooldowns.showHUD', enabled);
+                    // If enabling, render HUD for currently controlled actor
+                    if (enabled) {
+                        const aid = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor : (game.user.character || null);
+                        if (aid && globalThis.FoundryAuras?.engine) globalThis.FoundryAuras.engine.renderCooldownsHUD(aid);
+                    } else {
+                        if (globalThis.FoundryAuras?.engine) globalThis.FoundryAuras.engine.clearCooldownsHUD();
+                    }
+                } catch (e) { console.warn('Failed to set cooldowns.showHUD', e); }
+            });
+        }
         root.querySelectorAll('.fa-aura-item-content').forEach(item => {
             item.addEventListener('click', ev => {
                 console.log('FoundryAuras | Click event triggered on aura item');

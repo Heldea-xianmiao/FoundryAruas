@@ -26,6 +26,12 @@
                     </div>
                 {{/each}}
             </div>
+            <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                <label style="color:#ddd; font-size:12px; display:flex; align-items:center; gap:6px;">
+                    <input type="checkbox" class="fa-cd-showhud" name="cooldownsShowHUD" {{#if cooldownsShowHUD}}checked{{/if}} />
+                    {{localize "FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Name"}}
+                </label>
+            </div>
             <div class="fa-cooldowns-actions">
                 <input type="text" name="cd-key-input" placeholder="spell.key" class="short-input" />
                 <input type="number" name="cd-seconds-input" placeholder="秒" class="short-input" min="0" />

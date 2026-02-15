@@ -172,6 +172,8 @@
     "FOUNDRYAURAS.Settings.Cooldowns.TestButton": "测试映射",
     "FOUNDRYAURAS.Settings.Cooldowns.SaveButton": "保存"
     ,
+    "FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Name": "显示冷却 HUD",
+    "FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Hint": "在屏幕右上角显示当前选中 actor 的冷却列表（仅当前客户端可见）。",
     "FOUNDRYAURAS.Cooldowns.Title": "冷却 (Cooldowns)",
     "FOUNDRYAURAS.Cooldowns.CurrentFor": "当前冷却 (Actor ID)",
     "FOUNDRYAURAS.Cooldowns.SetButton": "设置冷却",

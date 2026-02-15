@@ -105,6 +105,16 @@ Hooks.once('init', () => {
     }
   });
 
+  // Show HUD overlay for cooldowns
+  game.settings.register('FoundryAuras', 'cooldowns.showHUD', {
+    name: 'FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Name',
+    hint: 'FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Hint',
+    scope: 'client',
+    config: false,
+    type: Boolean,
+    default: true
+  });
+
   // Register menu: Cooldowns settings UI
   game.settings.registerMenu('FoundryAuras', 'cooldownsSettings', {
     name: game.i18n.localize('FOUNDRYAURAS.Settings.Cooldowns.MenuName') || 'Cooldowns 设置',

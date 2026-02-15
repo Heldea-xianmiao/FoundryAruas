@@ -424,6 +424,7 @@ class AuraEngine {
             for (const [key, obj] of entries) {
                 const rem = Math.max(0, Math.ceil((obj.expires - now) / 1000));
                 const dur = obj.duration || 0;
+                // Compute percentage based on remaining / duration; ensure 0-100 and when duration==0 show 0
                 const pct = dur > 0 ? Math.max(0, Math.min(100, Math.round((rem / dur) * 100))) : 0;
                 const item = document.createElement('div');
                 item.className = 'fa-hud-cooldown-item';
@@ -438,6 +439,22 @@ class AuraEngine {
                 keyDiv.style.color = '#ddd';
                 keyDiv.style.fontSize = '12px';
                 keyDiv.style.flex = '1';
+                // If key indicates an item (item:Name), attempt to show the item's icon
+                if (key.startsWith('item:')) {
+                    const itemName = key.substring(5);
+                    try {
+                        const found = actor.items.find(i => (i.name === itemName) || (i.name?.toLowerCase() === itemName?.toLowerCase()));
+                        if (found && found.img) {
+                            const ico = document.createElement('div');
+                            ico.className = 'fa-bar-icon';
+                            ico.style.backgroundImage = `url('${found.img}')`;
+                            ico.style.backgroundSize = 'cover';
+                            ico.style.borderRadius = '4px';
+                            ico.style.border = '1px solid #333';
+                            item.insertBefore(ico, keyDiv);
+                        }
+                    } catch (e) { /* ignore */ }
+                }
                 const barWrapper = document.createElement('div');
                 barWrapper.className = 'fa-progressbar-wrapper';
                 barWrapper.style.width = '140px';

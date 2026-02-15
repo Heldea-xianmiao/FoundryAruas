@@ -177,4 +177,8 @@
     "FOUNDRYAURAS.Cooldowns.PurgeButton": "Purge Expired",
     "FOUNDRYAURAS.Cooldowns.Clear": "Clear",
     "FOUNDRYAURAS.Cooldowns.NoActor": "No token selected or actor not found"
+    ,
+    
+    "FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Name": "Show Cooldowns HUD",
+    "FOUNDRYAURAS.Settings.Cooldowns.ShowHUD.Hint": "Show a small cooldown list overlay (top-right) for the currently controlled actor (client-only)."
 }
