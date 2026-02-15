@@ -41,5 +41,12 @@
             "title": "FOUNDRYAURAS.Tour.Step6.Title",
             "content": "FOUNDRYAURAS.Tour.Step6.Content"
         }
+        ,
+        {
+            "id": "cooldowns",
+            "selector": ".fa-cooldowns-sidebar",
+            "title": "FOUNDRYAURAS.Tour.Step7.Title",
+            "content": "FOUNDRYAURAS.Tour.Step7.Content"
+        }
     ]
 }

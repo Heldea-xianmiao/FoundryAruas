@@ -113,6 +113,8 @@
     "FOUNDRYAURAS.Tour.Step5.Content": "【Scan】按钮非常重要！点击它，会立即对当前选中的 Token 运行一次条件检查。如果光环亮了，说明您的规则生效了。这比等待战斗回合更新要快得多。",
     "FOUNDRYAURAS.Tour.Step6.Title": "保存",
     "FOUNDRYAURAS.Tour.Step6.Content": "最后别忘了保存。光环是全局生效的，不需要您手动“装备”给某个 Token。",
+    "FOUNDRYAURAS.Tour.Step7.Title": "冷却面板",
+    "FOUNDRYAURAS.Tour.Step7.Content": "冷却面板会显示当前选中 Actor 的冷却列表。您可以在此手动设置、清理冷却，或切换 HUD 在屏幕右上角查看倒计时。",
     "FOUNDRYAURAS.Manager.NewAura": "新光环 (或从预设)",
     "FOUNDRYAURAS.Group.Loaded": "已加载",
     "FOUNDRYAURAS.Group.NotLoaded": "未加载",

@@ -345,6 +345,8 @@
     border: 1px solid #555;
     border-radius: 2px;
     cursor: pointer;
+    transform: scale(var(--range-thumb-scale, 1));
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .fa-settings-panel input[type="range"]::-moz-range-thumb {
@@ -354,6 +356,8 @@
     border: 1px solid #555;
     border-radius: 2px;
     cursor: pointer;
+    transform: scale(var(--range-thumb-scale, 1));
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .fa-settings-panel textarea {

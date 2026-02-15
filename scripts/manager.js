@@ -601,6 +601,29 @@ export class AuraManager extends FormApplication {
         // --- New Features Listeners ---
         // --- 新特性监听器 ---
 
+        // Range inputs: update CSS variables for visual fill and thumb scaling (左小右大效果)
+        const rangeInputs = root.querySelectorAll('input[type="range"]');
+        const updateRange = (el) => {
+            const min = parseFloat(el.min) || 0;
+            const max = parseFloat(el.max) || 1;
+            const val = parseFloat(el.value) || 0;
+            const pct = (max - min) !== 0 ? ((val - min) / (max - min)) * 100 : 0;
+            el.style.setProperty('--range-percent', pct + '%');
+            const scale = 0.8 + 0.6 * (pct / 100); // scale from 0.8 -> 1.4
+            el.style.setProperty('--range-thumb-scale', scale);
+            // Update adjacent .range-value display if present
+            const parent = el.closest('.option-row') || el.parentElement;
+            if (parent) {
+                const span = parent.querySelector('.range-value');
+                if (span) span.textContent = el.value + (el.dataset.unit || '');
+            }
+        };
+        rangeInputs.forEach(r => {
+            r.addEventListener('input', (e) => updateRange(e.currentTarget));
+            // Initialize
+            updateRange(r);
+        });
+
         // Import Button (Moved to Header Actions block above, removing duplicate check if any)
         // 导入按钮 (已移至上方头部动作块，移除重复检查)
 

@@ -351,10 +351,13 @@ class AuraEngine {
         // Listen for Token control changes (Aura should refresh when selecting different Tokens)
         // 监听 Token 控制权变化 (当你选中不同 Token 时，Aura 应该刷新)
         Hooks.on('controlToken', (token, controlled) => {
+            const showHud = game.settings?.get('FoundryAuras','cooldowns.showHUD');
             if (controlled && token.actor) {
                 this.checkAuras("controlToken", token.actor);
-                // Render cooldown HUD for the newly controlled token's actor
-                try { this.renderCooldownsHUD(token.actor); } catch (e) { /* ignore */ }
+                // Render cooldown HUD for the newly controlled token's actor if enabled
+                if (showHud) {
+                    try { this.renderCooldownsHUD(token.actor); } catch (e) { /* ignore */ }
+                }
             } else if (!controlled) {
                 // If deselected, strictly clean up Auras for that Token (depending on logic)
                 // For simplicity here, if no Token is currently controlled, hide all
@@ -362,7 +365,9 @@ class AuraEngine {
                 // 这里简单起见，如果当前没有控制任何 Token，可以隐藏
                 if (!canvas.tokens.controlled.length) {
                     this.clearAll();
-                    try { this.clearCooldownsHUD(); } catch (e) { /* ignore */ }
+                    if (showHud) {
+                        try { this.clearCooldownsHUD(); } catch (e) { /* ignore */ }
+                    }
                 }
             }
         });
@@ -370,6 +375,9 @@ class AuraEngine {
         // Update HUD when cooldowns change
         Hooks.on('FoundryAuras.cooldownsUpdated', (actorId, cur) => {
             try {
+                const showHud = game.settings?.get('FoundryAuras','cooldowns.showHUD');
+                // If HUD is disabled, ensure it's cleared
+                if (!showHud) return this.clearCooldownsHUD();
                 // If the HUD is showing for this actor, refresh it
                 if (this._cooldownHUDActorId === actorId) this.updateCooldownsHUD();
             } catch (e) { /* ignore */ }
