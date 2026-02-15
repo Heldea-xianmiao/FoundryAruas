@@ -7,6 +7,15 @@
 
 let _integrationHook = null;
 
+// 默认映射（示例）。可根据需要扩展或覆盖。
+const DEFAULT_MAPPING = {
+  // 英文名 / 中文名 对应冷却秒数
+  'Fireball': 60,
+  'Cure Wounds': 30,
+  '火球术': 60,
+  '治疗术': 30
+};
+
 function _resolveActorFromMessage(msg) {
   try {
     const speaker = msg.speaker || {};
@@ -40,12 +49,13 @@ function _extractItemNameFromMessage(msg) {
 
 export function registerDnd5eIntegration(mapping) {
   if (_integrationHook) return console.warn('Dnd5e integration already registered');
+  const map = Object.assign({}, DEFAULT_MAPPING, mapping || {});
   _integrationHook = Hooks.on('createChatMessage', async (msg) => {
     try {
       const itemName = _extractItemNameFromMessage(msg);
       if (!itemName) return;
       // 精确匹配 mapping 键
-      const seconds = mapping[itemName];
+      const seconds = map[itemName];
       if (!seconds) return;
       const actor = _resolveActorFromMessage(msg) || (msg?.user ? game.users.get(msg.user)?.character : null);
       if (!actor) return;
@@ -66,3 +76,22 @@ export function unregisterDnd5eIntegration() {
   _integrationHook = null;
   console.log('FoundryAuras: dnd5e 集成已注销');
 }
+
+// 自动注册：如果系统为 dnd5e，则在 ready 时自动注册默认映射，方便即刻使用。
+Hooks.once('ready', () => {
+  try {
+    if (game?.system?.id === 'dnd5e') {
+      // 如果已存在 FoundryAuras.CooldownsIntegration 注册接口，避免重复
+      if (!window.FoundryAuras) window.FoundryAuras = {};
+      window.FoundryAuras.CooldownsIntegration = {
+        register: registerDnd5eIntegration,
+        unregister: unregisterDnd5eIntegration
+      };
+      // 延迟注册默认映射，确保 ChatMessage hooks 可用
+      registerDnd5eIntegration(DEFAULT_MAPPING);
+      console.log('FoundryAuras: 自动为 dnd5e 注册 Cooldowns 集成（默认映射）');
+    }
+  } catch (e) {
+    console.warn('FoundryAuras: 自动注册 Cooldowns 集成失败', e);
+  }
+});
