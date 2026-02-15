@@ -130,3 +130,22 @@ await import('/modules/FoundryAuras/scripts/test_cooldowns_manual.js');
 ```
 
 说明：这些脚本设计为在 Foundry 环境中运行，它们会尝试查找当前选中 token 的 actor 并执行设置/查询/清理冷却的操作。如果在非 Foundry 环境运行，会记录错误信息。
+
+### 与 dnd5e 的可选集成
+
+模块提供一个可选的集成脚本 `scripts/cooldowns_integration.js`，用于把物品/技能使用自动映射为冷却：
+
+- 用法示例（在 Foundry 控制台执行）：
+
+```javascript
+// 定义映射（物品名 -> 冷却秒数）
+const mapping = {
+    '火球术': 60,
+    '治疗术': 30
+};
+// 导入并注册集成（模块加载后手动调用）
+await import('/modules/FoundryAuras/scripts/cooldowns_integration.js');
+registerDnd5eIntegration(mapping);
+```
+
+该集成尝试从 chat message 的 flags 或 content 中解析出物品名称（对 `midi-qol` 等常见模块有基本支持），并为对应 actor 设置冷却。该集成为可选注册，不会自动生效，便于维护与调试。
