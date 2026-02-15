@@ -577,6 +577,36 @@ export class AuraManager extends FormApplication {
             });
         });
 
+        // Populate cooldown icons and progress bars in sidebar (if actor items available)
+        try {
+            const aid = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor : (game.user.character || null);
+            const actor = aid || null;
+            root.querySelectorAll('.fa-cooldown-item').forEach(el => {
+                const key = el.dataset.key || '';
+                const iconEl = el.querySelector('.fa-cooldown-icon');
+                const fill = el.querySelector('.fa-cooldown-bar-fill');
+                // Default styles
+                if (iconEl) iconEl.style.backgroundImage = '';
+                // If actor and item: prefix, try find item image
+                if (actor && key.startsWith('item:')) {
+                    const itemName = key.substring(5);
+                    try {
+                        const found = actor.items.find(i => (i.name === itemName) || (i.name?.toLowerCase() === itemName?.toLowerCase()));
+                        if (found && found.img && iconEl) {
+                            iconEl.style.backgroundImage = `url('${found.img}')`;
+                            iconEl.style.backgroundSize = 'cover';
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+                // Try to set progress fill if value object available on template context (data attr parsing fallback)
+                try {
+                    const raw = el.querySelector('.cd-remaining')?.textContent?.trim();
+                    // If remaining looks like '12s' or numeric seconds, leave fill at 0; precise updates happen via engine HUD.
+                    if (fill) fill.style.width = '0%';
+                } catch (e) {}
+            });
+        } catch (e) { /* ignore */ }
+
         const createBtn = root.querySelector('button[data-action="create"]');
         if (createBtn) createBtn.addEventListener('click', this._onCreateAura.bind(this));
 

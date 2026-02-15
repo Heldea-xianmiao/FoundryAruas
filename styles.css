@@ -54,13 +54,28 @@
 }
 .fa-cooldown-item {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 0;
-    border-bottom: 1px solid #151515;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    border-radius: 6px;
 }
-.fa-cooldown-item .cd-key { flex: 1; color: #ddd; font-size: 12px; }
-.fa-cooldown-item .cd-remaining { color: #aaa; font-size: 12px; width: 48px; text-align: right; }
+.fa-cooldown-icon {
+    width: 36px;
+    height: 36px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.5);
+    flex-shrink: 0;
+}
+.fa-cooldown-info { flex: 1; display:flex; flex-direction:column; gap:6px; }
+.fa-cooldown-controls { display:flex; align-items:center; gap:8px; justify-content:space-between; }
+.fa-cooldown-item .cd-key { color: #ddd; font-size: 13px; font-weight:600; }
+.fa-cooldown-item .cd-remaining { color: #fff; background: rgba(0,0,0,0.35); padding: 4px 8px; border-radius: 12px; font-size: 12px; min-width:44px; text-align:center; }
+.fa-cooldown-bar { height:8px; background: rgba(0,0,0,0.25); border-radius:6px; overflow:hidden; }
+.fa-cooldown-bar-fill { height:100%; width:0%; background: linear-gradient(90deg,#ffbb33,#ffd86b); transition: width 0.4s ease; }
 .fa-cooldowns-actions { display:flex; gap:6px; align-items:center; }
 .fa-cooldowns-actions .short-input { width: 90px; }
 .fa-cooldowns-sidebar .notes.small { margin: 6px 0; color:#999; font-size:11px; }

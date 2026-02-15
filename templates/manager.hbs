@@ -20,9 +20,15 @@
             <div class="fa-cooldowns-list">
                 {{#each (objectEntries cooldowns)}}
                     <div class="fa-cooldown-item" data-key="{{this.[0]}}">
-                        <span class="cd-key">{{this.[0]}}</span>
-                        <span class="cd-remaining">{{../this.[1]}}</span>
-                        <button class="fa-tiny-btn" data-action="cd-clear" data-key="{{this.[0]}}">{{localize "FOUNDRYAURAS.Cooldowns.Clear"}}</button>
+                        <div class="fa-cooldown-icon" aria-hidden="true"></div>
+                        <div class="fa-cooldown-info">
+                            <span class="cd-key">{{this.[0]}}</span>
+                            <div class="fa-cooldown-controls">
+                                <span class="cd-remaining">{{../this.[1]}}</span>
+                                <button class="fa-tiny-btn" data-action="cd-clear" data-key="{{this.[0]}}">{{localize "FOUNDRYAURAS.Cooldowns.Clear"}}</button>
+                            </div>
+                            <div class="fa-cooldown-bar"><div class="fa-cooldown-bar-fill" style="width:0%"></div></div>
+                        </div>
                     </div>
                 {{/each}}
             </div>
