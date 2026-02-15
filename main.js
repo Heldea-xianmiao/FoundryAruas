@@ -45,13 +45,13 @@ class AuraEngine {
                         steps: [
                             {
                                 id: "welcome",
-                                selector: ".wa-container",
+                                selector: ".fa-container",
                                 title: "FOUNDRYAURAS.Tour.Step1.Title",
                                 content: "FOUNDRYAURAS.Tour.Step1.Content"
                             },
                             {
                                 id: "sidebar",
-                                selector: ".wa-sidebar",
+                                selector: ".fa-sidebar",
                                 title: "FOUNDRYAURAS.Tour.Step2.Title",
                                 content: "FOUNDRYAURAS.Tour.Step2.Content"
                             },
@@ -63,7 +63,7 @@ class AuraEngine {
                             },
                             {
                                 id: "editor-tabs",
-                                selector: ".wa-tabs",
+                                selector: ".fa-tabs",
                                 title: "FOUNDRYAURAS.Tour.Step4.Title",
                                 content: "FOUNDRYAURAS.Tour.Step4.Content"
                             },
@@ -608,8 +608,8 @@ class AuraEngine {
 
             // Update Progress Bar if applicable
             // 更新进度条 (如果适用)
-            if (aura.type === 'progressbar') {
-                const fill = auraDiv.querySelector('.wa-progress-fill');
+                if (aura.type === 'progressbar') {
+                const fill = auraDiv.querySelector('.fa-progress-fill');
                 if (fill && context.actor) {
                      // Try to auto-detect HP percentage for now
                      // 暂时尝试自动检测 HP 百分比
@@ -685,14 +685,14 @@ class AuraEngine {
         }
         
         if (isPreview) {
-            auraDiv.classList.add('wa-preview');
+            auraDiv.classList.add('fa-preview');
         }
 
         // --- RENDER CONTENT BASED ON TYPE ---
         // --- 基于类型渲染内容 ---
         
         if (aura.type === 'progressbar') {
-            auraDiv.classList.add('wa-progressbar-wrapper');
+            auraDiv.classList.add('fa-progressbar-wrapper');
             // Ensure container class for CSS handles
             auraDiv.classList.add('foundry-aura-container');
             
@@ -702,7 +702,7 @@ class AuraEngine {
             // Background
             // 背景
             const barBg = document.createElement('div');
-            barBg.className = 'wa-progress-bg';
+            barBg.className = 'fa-progress-bg';
             barBg.style.backgroundColor = aura.display.barBgColor || '#333';
             barBg.style.width = '100%';
             barBg.style.height = '100%';
@@ -710,7 +710,7 @@ class AuraEngine {
             // Fill
             // 填充
             const barFill = document.createElement('div');
-            barFill.className = 'wa-progress-fill';
+            barFill.className = 'fa-progress-fill';
             barFill.style.backgroundColor = aura.display.barColor || '#f00';
             barFill.style.height = '100%';
             barFill.style.width = '100%'; 
@@ -731,13 +731,13 @@ class AuraEngine {
             // Overlay Text
             // 覆盖文本
             const barText = document.createElement('div');
-            barText.className = 'aura-text wa-bar-text';
+            barText.className = 'aura-text fa-bar-text';
             barText.textContent = displayText;
 
             // Icon (Optional, left side)
             // 图标 (可选，左侧)
             const iconDiv = document.createElement('div');
-            iconDiv.className = 'aura-icon wa-bar-icon';
+            iconDiv.className = 'aura-icon fa-bar-icon';
             iconDiv.style.backgroundImage = `url('${aura.display.icon}')`;
 
             barBg.appendChild(barFill);
@@ -831,7 +831,7 @@ class AuraEngine {
 
         // Don't attach interaction to preview auras - manager handles dragging
         // 不要为预览光环添加交互 - 管理器处理拖拽
-        if (element.classList.contains('wa-preview')) return;
+        if (element.classList.contains('fa-preview')) return;
 
         element.classList.add('editable');
 
@@ -965,7 +965,7 @@ class AuraEngine {
                  child.style.zIndex = 150; 
              } else {
                  child.classList.remove('aura-selected');
-                 if (child.classList.contains('wa-preview')) {
+                 if (child.classList.contains('fa-preview')) {
                      child.style.zIndex = '';
                  }
              }

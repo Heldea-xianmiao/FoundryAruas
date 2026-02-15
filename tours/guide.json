@@ -7,13 +7,13 @@
     "steps": [
         {
             "id": "welcome",
-            "selector": ".wa-container",
+            "selector": ".fa-container",
             "title": "FOUNDRYAURAS.Tour.Step1.Title",
             "content": "FOUNDRYAURAS.Tour.Step1.Content"
         },
         {
             "id": "sidebar",
-            "selector": ".wa-sidebar",
+            "selector": ".fa-sidebar",
             "title": "FOUNDRYAURAS.Tour.Step2.Title",
             "content": "FOUNDRYAURAS.Tour.Step2.Content"
         },
@@ -25,7 +25,7 @@
         },
         {
             "id": "editor-tabs",
-            "selector": ".wa-tabs",
+            "selector": ".fa-tabs",
             "title": "FOUNDRYAURAS.Tour.Step4.Title",
             "content": "FOUNDRYAURAS.Tour.Step4.Content"
         },

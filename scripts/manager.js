@@ -357,18 +357,18 @@ export class AuraManager extends FormApplication {
 
         // API Helper functionality (Search & Insert)
         // API 助手功能 (搜索与插入)
-        const searchInput = root.querySelector('.wa-helper-search input');
+        const searchInput = root.querySelector('.fa-helper-search input');
         if (searchInput) {
             searchInput.addEventListener('input', ev => {
                 const term = ev.target.value.toLowerCase();
-                root.querySelectorAll('.wa-helper-item').forEach(el => {
+                root.querySelectorAll('.fa-helper-item').forEach(el => {
                     const text = el.innerText.toLowerCase();
                     el.style.display = text.includes(term) ? 'block' : 'none';
                 });
             });
         }
 
-        root.querySelectorAll('.wa-helper-item').forEach(item => {
+        root.querySelectorAll('.fa-helper-item').forEach(item => {
             item.addEventListener('click', ev => {
                 const code = ev.currentTarget.dataset.code;
                 const textarea = root.querySelector('textarea[name="conditionScript"]');
@@ -398,7 +398,7 @@ export class AuraManager extends FormApplication {
 
         // Item Selection
         // 项目选择
-        root.querySelectorAll('.wa-aura-item-content').forEach(item => {
+        root.querySelectorAll('.fa-aura-item-content').forEach(item => {
             item.addEventListener('click', ev => {
                 console.log('FoundryAuras | Click event triggered on aura item');
                 // Prevent bubble if clicking controls
@@ -408,14 +408,14 @@ export class AuraManager extends FormApplication {
                 ev.preventDefault();
                 // Find parent li
                 // 查找父级 li 元素
-                const li = ev.currentTarget.closest('.wa-aura-item');
+                const li = ev.currentTarget.closest('.fa-aura-item');
                 const newAuraId = li.dataset.id;
                 console.log(`FoundryAuras | Clicked aura: ${newAuraId}, current selectedAuraId: ${this.selectedAuraId}`);
                 console.log(`FoundryAuras | LI element:`, li);
                 console.log(`FoundryAuras | LI dataset:`, li.dataset);
                 
                 // Check if there are multiple elements with the same data-id
-                const allItemsWithSameId = root.querySelectorAll(`.wa-aura-item[data-id="${newAuraId}"]`);
+                const allItemsWithSameId = root.querySelectorAll(`.fa-aura-item[data-id="${newAuraId}"]`);
                 console.log(`FoundryAuras | Found ${allItemsWithSameId.length} elements with data-id="${newAuraId}"`);
                 
                 // Update selection and preview
@@ -441,7 +441,7 @@ export class AuraManager extends FormApplication {
 
         // Tab Navigation
         // 标签页导航
-        root.querySelectorAll('.wa-tab-item').forEach(tab => {
+        root.querySelectorAll('.fa-tab-item').forEach(tab => {
             tab.addEventListener('click', ev => {
                 ev.preventDefault();
                 this.activeTab = ev.currentTarget.dataset.tab;
@@ -451,7 +451,7 @@ export class AuraManager extends FormApplication {
 
         // Create From Preset
         // 从预设创建
-        root.querySelectorAll('.wa-preset-item').forEach(btn => {
+        root.querySelectorAll('.fa-preset-item').forEach(btn => {
             btn.addEventListener('click', this._onCreateFromPreset.bind(this));
         });
 
@@ -466,16 +466,16 @@ export class AuraManager extends FormApplication {
              // 动态构建引导
              const steps = [
                 // Target header span instead of container to avoid click-through issues from the help button
-                { id: "welcome", selector: ".wa-sidebar-header span", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step1.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step1.Content") },
-                { id: "sidebar", selector: ".wa-sidebar", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step2.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step2.Content") }
+                { id: "welcome", selector: ".fa-sidebar-header span", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step1.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step1.Content") },
+                { id: "sidebar", selector: ".fa-sidebar", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step2.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step2.Content") }
              ];
              
-             if (root.querySelector('.wa-empty-state')) {
-                 steps.push({ id: "presets", selector: ".wa-empty-state", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step3.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step3.Content") });
+                 if (root.querySelector('.fa-empty-state')) {
+                 steps.push({ id: "presets", selector: ".fa-empty-state", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step3.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step3.Content") });
              }
              
              if (root.querySelector('textarea[name="conditionScript"]')) {
-                 steps.push({ id: "editor", selector: ".wa-container", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step4.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step4.Content") });
+                 steps.push({ id: "editor", selector: ".fa-container", title: game.i18n.localize("FOUNDRYAURAS.Tour.Step4.Title"), content: game.i18n.localize("FOUNDRYAURAS.Tour.Step4.Content") });
              }
              
              if (root.querySelector('button[data-action="save"]')) {
@@ -585,7 +585,7 @@ export class AuraManager extends FormApplication {
 
         // Rename (Input change)
         // 重命名 (输入改变)
-        root.querySelectorAll('.wa-rename-input').forEach(input => {
+        root.querySelectorAll('.fa-rename-input').forEach(input => {
             input.addEventListener('change', this._onRenameAura.bind(this));
             input.addEventListener('click', e => e.stopPropagation()); // Stop selection
         });
@@ -645,7 +645,7 @@ export class AuraManager extends FormApplication {
         const fixFilePickers = () => {
             // Find all flexrow containers with file pickers
             // 查找所有包含文件选择器的flexrow容器
-            const flexrows = this.element?.querySelectorAll('.wa-settings-panel .flexrow') || [];
+            const flexrows = this.element?.querySelectorAll('.fa-settings-panel .flexrow') || [];
             flexrows.forEach(flexrow => {
                 const input = flexrow.querySelector('input[type="text"]');
                 const filePicker = flexrow.querySelector('button.file-picker');
@@ -692,7 +692,7 @@ export class AuraManager extends FormApplication {
         const hud = document.getElementById('foundry-auras-hud');
         if (hud) {
             hud.onmousedown = (e) => {
-                 const target = e.target.closest('.aura-display.wa-preview');
+                 const target = e.target.closest('.aura-display.fa-preview');
                  if (!target) return;
                  
                  e.preventDefault(); 
@@ -951,13 +951,13 @@ export class AuraManager extends FormApplication {
         event.preventDefault();
         new Dialog({
             title: game.i18n.localize("FOUNDRYAURAS.Manager.Import"),
-            content: `<textarea id="wa-import-text" style="width:100%; height: 200px; background:#111; color:#eee;" placeholder="Paste string here (!FA:...)"></textarea>`,
+            content: `<textarea id="fa-import-text" style="width:100%; height: 200px; background:#111; color:#eee;" placeholder="Paste string here (!FA:...)"></textarea>`,
             buttons: {
                 import: {
                     label: "Import",
                     callback: async html => {
                         const root = html instanceof HTMLElement ? html : html[0];
-                        const str = root.querySelector("#wa-import-text").value.trim();
+                        const str = root.querySelector("#fa-import-text").value.trim();
                         
                         if (!str.startsWith("!FA:")) {
                             return ui.notifications.error("Invalid String Format (Must start with !FA:)");
@@ -1148,7 +1148,7 @@ export class AuraManager extends FormApplication {
     // 修复文件选择器集成
     _fixFilePickers() {
         const applyFix = (rootEl) => {
-            const flexrows = (rootEl || this.element[0]).querySelectorAll('.wa-settings-panel .flexrow') || [];
+            const flexrows = (rootEl || this.element[0]).querySelectorAll('.fa-settings-panel .flexrow') || [];
             flexrows.forEach(flexrow => {
                 const input = flexrow.querySelector('input[type="text"]') || flexrow.querySelector('input');
                 // Prefer the rendered button inside file-picker, but accept <file-picker> custom element too
@@ -1169,7 +1169,7 @@ export class AuraManager extends FormApplication {
 
                         // If this flexrow contains audio control buttons after the file-picker,
                         // keep the file-picker inline (static) so it doesn't overlap those buttons.
-                        const hasAudioButtons = !!(flexrow.querySelector('.wa-audio-play') || flexrow.querySelector('.wa-audio-clear'));
+                        const hasAudioButtons = !!(flexrow.querySelector('.fa-audio-play') || flexrow.querySelector('.fa-audio-clear'));
                         if (hasAudioButtons) {
                             // Inline layout: give small spacing so buttons don't touch
                             filePickerEl.style.position = filePickerEl.style.position || 'static';

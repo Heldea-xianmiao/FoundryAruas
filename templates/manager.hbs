@@ -1,38 +1,62 @@
-<form class="wa-container" autocomplete="off">
+<form class="fa-container" autocomplete="off">
     <!-- LEFT SIDEBAR: LIST -->
     <!-- 左侧边栏: 列表 -->
-    <aside class="wa-sidebar">
-        <header class="wa-sidebar-header">
+    <aside class="fa-sidebar">
+        <header class="fa-sidebar-header">
             <span style="font-weight: bold; padding-left: 5px;">Foundry Auras</span>
-            <div class="wa-header-actions">
-                <button type="button" class="wa-btn-icon" data-action="help" title="Tour / Help"><i class="fas fa-question-circle"></i></button>
-                <button type="button" class="wa-btn-icon" data-action="cooldowns" title="Cooldowns / 冷却"><i class="fas fa-stopwatch"></i></button>
-                <button type="button" class="wa-btn-icon" data-action="export-all" title="{{localize 'FOUNDRYAURAS.Manager.ExportAll'}}"><i class="fas fa-file-export"></i></button>
-                <button type="button" class="wa-btn-icon" data-action="import" title="{{localize 'FOUNDRYAURAS.Manager.Import'}}"><i class="fas fa-file-import"></i></button>
-                <button type="button" class="wa-btn-icon" data-action="create" title="{{localize 'FOUNDRYAURAS.Manager.New'}}"><i class="fas fa-plus"></i></button>
+            <div class="fa-header-actions">
+                <button type="button" class="fa-btn-icon" data-action="help" title="Tour / Help"><i class="fas fa-question-circle"></i></button>
+                <button type="button" class="fa-btn-icon" data-action="cooldowns" title="Cooldowns / 冷却"><i class="fas fa-stopwatch"></i></button>
+                <button type="button" class="fa-btn-icon" data-action="export-all" title="{{localize 'FOUNDRYAURAS.Manager.ExportAll'}}"><i class="fas fa-file-export"></i></button>
+                <button type="button" class="fa-btn-icon" data-action="import" title="{{localize 'FOUNDRYAURAS.Manager.Import'}}"><i class="fas fa-file-import"></i></button>
+                <button type="button" class="fa-btn-icon" data-action="create" title="{{localize 'FOUNDRYAURAS.Manager.New'}}"><i class="fas fa-plus"></i></button>
             </div>
         </header>
+        <!-- Cooldowns Sidebar -->
+        <section class="fa-cooldowns-sidebar">
+            <h4>{{localize "FOUNDRYAURAS.Cooldowns.Title"}}</h4>
+            {{#if cooldownsActorId}}
+            <p class="notes small">{{localize "FOUNDRYAURAS.Cooldowns.CurrentFor"}}: {{cooldownsActorId}}</p>
+            <div class="fa-cooldowns-list">
+                {{#each (objectEntries cooldowns)}}
+                    <div class="fa-cooldown-item" data-key="{{this.[0]}}">
+                        <span class="cd-key">{{this.[0]}}</span>
+                        <span class="cd-remaining">{{../this.[1]}}</span>
+                        <button class="fa-tiny-btn" data-action="cd-clear" data-key="{{this.[0]}}">{{localize "FOUNDRYAURAS.Cooldowns.Clear"}}</button>
+                    </div>
+                {{/each}}
+            </div>
+            <div class="fa-cooldowns-actions">
+                <input type="text" name="cd-key-input" placeholder="spell.key" class="short-input" />
+                <input type="number" name="cd-seconds-input" placeholder="秒" class="short-input" min="0" />
+                <button class="btn" data-action="cd-set">{{localize "FOUNDRYAURAS.Cooldowns.SetButton"}}</button>
+                <button class="btn" data-action="cd-purge">{{localize "FOUNDRYAURAS.Cooldowns.PurgeButton"}}</button>
+            </div>
+            {{else}}
+            <p class="notes small">{{localize "FOUNDRYAURAS.Cooldowns.NoActor"}}</p>
+            {{/if}}
+        </section>
         
-        <ul class="wa-aura-list">
+        <ul class="fa-aura-list">
             <!-- LOADED SECTION -->
             <!-- 已载入区域 -->
-            <li class="wa-group-header">{{localize "FOUNDRYAURAS.Group.Loaded"}}</li>
+            <li class="fa-group-header">{{localize "FOUNDRYAURAS.Group.Loaded"}}</li>
             {{#each loadedAuras}}
-            <li class="wa-aura-item {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
-                <div class="wa-aura-item-content">
-                     <div class="wa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
-                     <div class="wa-aura-name">{{this.name}}</div>
-                </div>
+              <li class="fa-aura-item {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
+                 <div class="fa-aura-item-content">
+                     <div class="fa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
+                     <div class="fa-aura-name">{{this.name}}</div>
+                 </div>
                 
                 {{#if (eq this.id ../selectedAuraId)}}
-                <div class="wa-aura-controls">
-                    <div class="wa-control-row">
-                        <input type="text" class="wa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
+                <div class="fa-aura-controls">
+                    <div class="fa-control-row">
+                        <input type="text" class="fa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
                     </div>
-                    <div class="wa-control-row buttons">
-                        <button type="button" class="wa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
-                        <button type="button" class="wa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Unload'}}"><i class="fas fa-eye-slash"></i></button>
-                        <button type="button" class="wa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
+                    <div class="fa-control-row buttons">
+                        <button type="button" class="fa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
+                        <button type="button" class="fa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Unload'}}"><i class="fas fa-eye-slash"></i></button>
+                        <button type="button" class="fa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
                     </div>
                 </div>
                 {{/if}}
@@ -42,23 +66,23 @@
             <!-- NOT LOADED SECTION -->
             <!-- 未载入区域 -->
             {{#if unloadedAuras.length}}
-            <li class="wa-group-header">{{localize "FOUNDRYAURAS.Group.NotLoaded"}}</li>
+            <li class="fa-group-header">{{localize "FOUNDRYAURAS.Group.NotLoaded"}}</li>
             {{#each unloadedAuras}}
-             <li class="wa-aura-item unloaded {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
-                <div class="wa-aura-item-content">
-                     <div class="wa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
-                     <div class="wa-aura-name">{{this.name}}</div>
-                </div>
+               <li class="fa-aura-item unloaded {{#if (eq this.id ../selectedAuraId)}}active{{/if}}" data-id="{{this.id}}" data-name="{{this.name}}">
+                 <div class="fa-aura-item-content">
+                     <div class="fa-aura-icon" style="background-image: url('{{this.display.icon}}')"></div>
+                     <div class="fa-aura-name">{{this.name}}</div>
+                 </div>
                 
                 {{#if (eq this.id ../selectedAuraId)}}
-                <div class="wa-aura-controls">
-                    <div class="wa-control-row">
-                        <input type="text" class="wa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
+                <div class="fa-aura-controls">
+                    <div class="fa-control-row">
+                        <input type="text" class="fa-rename-input" data-id="{{this.id}}" value="{{this.name}}" />
                     </div>
-                    <div class="wa-control-row buttons">
-                        <button type="button" class="wa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
-                        <button type="button" class="wa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Load'}}"><i class="fas fa-eye"></i></button>
-                         <button type="button" class="wa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
+                    <div class="fa-control-row buttons">
+                        <button type="button" class="fa-tiny-btn" data-action="duplicate" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Duplicate'}}"><i class="fas fa-copy"></i></button>
+                        <button type="button" class="fa-tiny-btn" data-action="toggle-load" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Load'}}"><i class="fas fa-eye"></i></button>
+                         <button type="button" class="fa-tiny-btn" data-action="export" data-id="{{this.id}}" title="{{localize 'FOUNDRYAURAS.Action.Export'}}"><i class="fas fa-file-export"></i></button>
                     </div>
                 </div>
                 {{/if}}
@@ -72,45 +96,22 @@
 
     <!-- RIGHT CONTENT: EDITOR -->
     <!-- 右侧内容: 编辑器 -->
-    <main class="wa-main-container">
-        <!-- Cooldowns Panel (Integrated) -->
-        <section class="wa-cooldowns-panel">
-            <h3>{{localize "FOUNDRYAURAS.Cooldowns.Title"}}</h3>
-            {{#if cooldownsActorId}}
-            <p class="notes">{{localize "FOUNDRYAURAS.Cooldowns.CurrentFor"}}: {{cooldownsActorId}}</p>
-            <div class="wa-cooldowns-list">
-                {{#each (objectEntries cooldowns)}}
-                    <div class="wa-cooldown-item" data-key="{{this.[0]}}">
-                        <span class="cd-key">{{this.[0]}}</span>
-                        <span class="cd-remaining">{{../this.[1]}}</span>
-                        <button class="wa-tiny-btn" data-action="cd-clear" data-key="{{this.[0]}}">{{localize "FOUNDRYAURAS.Cooldowns.Clear"}}</button>
-                    </div>
-                {{/each}}
-            </div>
-            <div class="wa-cooldowns-actions">
-                <input type="text" name="cd-key-input" placeholder="spell.key" class="short-input" />
-                <input type="number" name="cd-seconds-input" placeholder="秒" class="short-input" min="0" />
-                <button class="btn" data-action="cd-set">{{localize "FOUNDRYAURAS.Cooldowns.SetButton"}}</button>
-                <button class="btn" data-action="cd-purge">{{localize "FOUNDRYAURAS.Cooldowns.PurgeButton"}}</button>
-            </div>
-            {{else}}
-            <p class="notes">{{localize "FOUNDRYAURAS.Cooldowns.NoActor"}}</p>
-            {{/if}}
-        </section>
+    <main class="fa-main-container">
+        <!-- Cooldowns was moved to sidebar above -->
         {{#if selectedAura}}
-            <div class="wa-editor-container">
+            <div class="fa-editor-container">
                 <!-- TABS -->
                 <!-- 标签页 -->
-                <nav class="wa-tabs">
-                    <div class="wa-tab-item {{#if (eq activeTab 'display')}}active{{/if}}" data-tab="display">{{localize "FOUNDRYAURAS.Editor.Display"}}</div>
-                    <div class="wa-tab-item {{#if (eq activeTab 'trigger')}}active{{/if}}" data-tab="trigger">{{localize "FOUNDRYAURAS.Editor.Trigger"}}</div>
-                    <div class="wa-tab-item {{#if (eq activeTab 'conditions')}}active{{/if}}" data-tab="conditions">{{localize "FOUNDRYAURAS.Editor.Conditions"}}</div>
+                <nav class="fa-tabs">
+                    <div class="fa-tab-item {{#if (eq activeTab 'display')}}active{{/if}}" data-tab="display">{{localize "FOUNDRYAURAS.Editor.Display"}}</div>
+                    <div class="fa-tab-item {{#if (eq activeTab 'trigger')}}active{{/if}}" data-tab="trigger">{{localize "FOUNDRYAURAS.Editor.Trigger"}}</div>
+                    <div class="fa-tab-item {{#if (eq activeTab 'conditions')}}active{{/if}}" data-tab="conditions">{{localize "FOUNDRYAURAS.Editor.Conditions"}}</div>
                 </nav>
 
                 <!-- SETTINGS PANELS -->
                 <!-- 设置面板 -->
-                <div class="wa-settings-panel">
-                    <div class="wa-settings-scroll">
+                <div class="fa-settings-panel">
+                    <div class="fa-settings-scroll">
                 
                 <!-- Common Header for all tabs (ID hidden but present) -->
                 <!-- 所有标签页的通用头部 (ID 隐藏但存在) -->
@@ -136,7 +137,7 @@
                 </div>
                 
                 <!-- COMMON POSITION & SIZE -->
-                <div class="wa-group-box">
+                <div class="fa-group-box">
                     <h4>{{localize "FOUNDRYAURAS.Editor.Style"}}</h4>
                     <div class="form-group">
                         <label>{{localize "FOUNDRYAURAS.Editor.Position"}}</label>
@@ -160,7 +161,7 @@
 
                 <!-- PROGRESS BAR SPECIFIC -->
                 {{#if (eq selectedAura.type 'progressbar')}}
-                <div class="wa-group-box">
+                <div class="fa-group-box">
                     <h4>{{localize "FOUNDRYAURAS.Editor.ProgressBarSettings"}}</h4>
                     <div class="form-group">
                         <label>{{localize "FOUNDRYAURAS.Editor.BarColor"}}</label>
@@ -174,7 +175,7 @@
 
                 <!-- ICON SPECIFIC -->
                 {{#if (eq selectedAura.type 'icon')}}
-                <div class="wa-group-box">
+                <div class="fa-group-box">
                     <h4>{{localize "FOUNDRYAURAS.Editor.IconSettings"}}</h4>
                     <div class="form-group">
                          <label>{{localize "FOUNDRYAURAS.Editor.Icon"}}</label>
@@ -191,7 +192,7 @@
 
                     <!-- Display Mode Specific Settings -->
                     {{#if (eq selectedAura.display.mode 'icon')}}
-                    <div class="wa-group-box">
+                    <div class="fa-group-box">
                         <h4>{{localize "FOUNDRYAURAS.DisplayMode.Icon"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
                         <div class="form-group">
                             <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
@@ -231,7 +232,7 @@
                     {{/if}}
 
                     {{#if (eq selectedAura.display.mode 'text')}}
-                    <div class="wa-group-box">
+                    <div class="fa-group-box">
                         <h4>{{localize "FOUNDRYAURAS.DisplayMode.Text"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
                         <div class="form-group">
                             <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
@@ -272,7 +273,7 @@
                     {{/if}}
 
                     {{#if (eq selectedAura.display.mode 'both')}}
-                    <div class="wa-group-box">
+                    <div class="fa-group-box">
                         <h4>{{localize "FOUNDRYAURAS.DisplayMode.Both"}} {{localize "FOUNDRYAURAS.Editor.Settings"}}</h4>
                         <div class="form-group">
                             <label>{{localize "FOUNDRYAURAS.Editor.Size"}}</label>
@@ -325,7 +326,7 @@
 
                 <!-- TEXT SPECIFIC -->
                 {{#if (eq selectedAura.type 'text')}}
-                      <div class="wa-group-box">
+                      <div class="fa-group-box">
                           <h4>{{localize "FOUNDRYAURAS.Editor.TextSettings"}}</h4>
                     <div class="form-group">
                         <label>{{localize "FOUNDRYAURAS.Editor.FontSize"}}</label>
@@ -432,22 +433,22 @@
                 {{else}}
                     <!-- SCRIPT EDITOR WITH SIDEBAR -->
                     <p class="notes">{{localize "FOUNDRYAURAS.Editor.ConditionsHint"}}</p>
-                    <div class="wa-script-container">
-                        <div class="wa-script-editor" style="display: flex; flex-direction: column; flex: 1;">
-                             <div class="wa-script-toolbar" style="margin-bottom: 5px; text-align: right;">
-                                <button type="button" class="wa-tiny-btn" data-action="save-script" style="display: inline-flex; width: auto; padding: 4px 10px; font-weight: bold; color: #4f4;"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.SaveScript"}}</button>
+                    <div class="fa-script-container">
+                        <div class="fa-script-editor" style="display: flex; flex-direction: column; flex: 1;">
+                             <div class="fa-script-toolbar" style="margin-bottom: 5px; text-align: right;">
+                                <button type="button" class="fa-tiny-btn" data-action="save-script" style="display: inline-flex; width: auto; padding: 4px 10px; font-weight: bold; color: #4f4;"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.SaveScript"}}</button>
                              </div>
                              <textarea name="conditionScript" style="flex: 1; font-family: monospace; background: #111; color: #0f0; border: 1px solid #444;">{{selectedAura.conditionScript}}</textarea>
                         </div>
-                        <div class="wa-script-helper">
-                            <div class="wa-helper-search">
+                        <div class="fa-script-helper">
+                            <div class="fa-helper-search">
                                 <input type="text" placeholder="Search API..." />
                             </div>
-                            <ul class="wa-helper-list wa-aura-list"> <!-- Reuse scrollbar class -->
+                            <ul class="fa-helper-list fa-aura-list"> <!-- Reuse scrollbar class -->
                                 {{#each apiDocs}}
-                                <li class="wa-helper-item" data-code="{{this.code}}">
-                                    <div class="wa-helper-name">{{this.name}}</div>
-                                    <div class="wa-helper-code">{{this.code}}</div>
+                                <li class="fa-helper-item" data-code="{{this.code}}">
+                                    <div class="fa-helper-name">{{this.name}}</div>
+                                    <div class="fa-helper-code">{{this.code}}</div>
                                     <div style="color: #666; font-size: 9px; margin-top:2px;">{{this.group}}</div>
                                 </li>
                                 {{/each}}
@@ -458,27 +459,27 @@
 
                 {{/if}}
 
-           </div> <!-- /.wa-settings-scroll -->
+           </div> <!-- /.fa-settings-scroll -->
 
-              <div class="wa-footer-actions">
-                  <button type="button" class="wa-tiny-btn wa-footer-save" data-action="save"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.Save"}}</button>
-                  <button type="button" class="wa-tiny-btn wa-footer-delete" data-action="delete"><i class="fas fa-trash"></i> {{localize "FOUNDRYAURAS.Manager.Delete"}}</button>
+              <div class="fa-footer-actions">
+                  <button type="button" class="fa-tiny-btn fa-footer-save" data-action="save"><i class="fas fa-save"></i> {{localize "FOUNDRYAURAS.Editor.Save"}}</button>
+                  <button type="button" class="fa-tiny-btn fa-footer-delete" data-action="delete"><i class="fas fa-trash"></i> {{localize "FOUNDRYAURAS.Manager.Delete"}}</button>
               </div>
 
-              </div> <!-- /.wa-settings-panel -->
-              </div> <!-- /.wa-editor-container -->
+              </div> <!-- /.fa-settings-panel -->
+              </div> <!-- /.fa-editor-container -->
 
         {{else}}
-            <div class="wa-empty-state" style="flex-direction: column;">
+            <div class="fa-empty-state" style="flex-direction: column;">
                 <div style="margin-bottom: 20px;">{{localize "FOUNDRYAURAS.Manager.NewAura"}}</div>
                 
-                <div class="wa-preset-grid">
+                <div class="fa-preset-grid">
                     {{#each presets}}
-                    <div class="wa-preset-item" data-preset="{{this.id}}">
-                        <div class="wa-preset-icon" style="background-image: url('{{this.data.display.icon}}')"></div>
-                        <div class="wa-preset-info">
-                            <div class="wa-preset-title">{{localize this.name}}</div>
-                            <div class="wa-preset-desc">{{localize this.description}}</div>
+                    <div class="fa-preset-item" data-preset="{{this.id}}">
+                        <div class="fa-preset-icon" style="background-image: url('{{this.data.display.icon}}')"></div>
+                        <div class="fa-preset-info">
+                            <div class="fa-preset-title">{{localize this.name}}</div>
+                            <div class="fa-preset-desc">{{localize this.description}}</div>
                         </div>
                     </div>
                     {{/each}}

@@ -17,7 +17,7 @@
 
 /* Two column layout */
 /* 双栏布局 */
-.wa-container {
+.fa-container {
     display: flex;
     /* Remove height: 100% to allow proper sizing */
     /* 移除 height: 100% 以允许正确尺寸 */
@@ -27,7 +27,7 @@
 
 /* LEFT SIDEBAR */
 /* 左侧边栏 */
-.wa-sidebar {
+.fa-sidebar {
     width: 250px;
     min-width: 200px;
     background-color: #212121; /* Darker sidebar */
@@ -36,7 +36,36 @@
     flex-direction: column;
 }
 
-.wa-sidebar-header {
+/* Cooldowns Sidebar Styling */
+.fa-cooldowns-sidebar {
+    padding: 10px;
+    border-top: 1px solid #2a2a2a;
+    background: linear-gradient(to bottom, #1f1f1f, #191919);
+}
+.fa-cooldowns-sidebar h4 {
+    margin: 0 0 6px 0;
+    color: #ffcc00;
+    font-size: 12px;
+}
+.fa-cooldowns-list {
+    max-height: 160px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+}
+.fa-cooldown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid #151515;
+}
+.fa-cooldown-item .cd-key { flex: 1; color: #ddd; font-size: 12px; }
+.fa-cooldown-item .cd-remaining { color: #aaa; font-size: 12px; width: 48px; text-align: right; }
+.fa-cooldowns-actions { display:flex; gap:6px; align-items:center; }
+.fa-cooldowns-actions .short-input { width: 90px; }
+.fa-cooldowns-sidebar .notes.small { margin: 6px 0; color:#999; font-size:11px; }
+
+.fa-sidebar-header {
     padding: 10px;
     background-color: #2b2b2b;
     border-bottom: 1px solid #000;
@@ -46,7 +75,7 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-.wa-aura-list {
+.fa-aura-list {
     flex: 1;
     overflow-y: auto;
     padding: 2px;
@@ -58,23 +87,23 @@
 
 /* Custom Scrollbar */
 /* 自定义滚动条 */
-.wa-aura-list::-webkit-scrollbar, .wa-settings-panel::-webkit-scrollbar {
+.fa-aura-list::-webkit-scrollbar, .fa-settings-panel::-webkit-scrollbar {
     width: 8px;
 }
-.wa-aura-list::-webkit-scrollbar-track, .wa-settings-panel::-webkit-scrollbar-track {
+.fa-aura-list::-webkit-scrollbar-track, .fa-settings-panel::-webkit-scrollbar-track {
     background: #222; 
 }
-.wa-aura-list::-webkit-scrollbar-thumb, .wa-settings-panel::-webkit-scrollbar-thumb {
+.fa-aura-list::-webkit-scrollbar-thumb, .fa-settings-panel::-webkit-scrollbar-thumb {
     background: #555; 
     border-radius: 4px;
 }
-.wa-aura-list::-webkit-scrollbar-thumb:hover, .wa-settings-panel::-webkit-scrollbar-thumb:hover {
+.fa-aura-list::-webkit-scrollbar-thumb:hover, .fa-settings-panel::-webkit-scrollbar-thumb:hover {
     background: #777; 
 }
 
 /* GROUPS */
 /* 分组 */
-.wa-group-header {
+.fa-group-header {
     background: linear-gradient(to right, #2b2b2b, #222);
     color: #ffcc00;
     font-size: 11px;
@@ -87,7 +116,7 @@
 
 /* ITEMS */
 /* 列表项 */
-.wa-aura-item {
+.fa-aura-item {
     display: flex;
     flex-direction: column; /* Allow expansion */
     align-items: stretch;
@@ -100,35 +129,35 @@
     transition: background-color 0.1s;
 }
 
-.wa-aura-item-content {
+.fa-aura-item-content {
     display: flex;
     align-items: center;
     padding: 6px 10px;
     cursor: pointer;
 }
 
-.wa-aura-item-content:hover {
+.fa-aura-item-content:hover {
     background-color: #333;
 }
 
 /* Unloaded State */
-.wa-aura-item.unloaded .wa-aura-icon {
+.fa-aura-item.unloaded .fa-aura-icon {
     opacity: 0.4;
     filter: grayscale(100%);
 }
-.wa-aura-item.unloaded .wa-aura-name {
+.fa-aura-item.unloaded .fa-aura-name {
     color: #888;
 }
 
-.wa-aura-item.active {
+.fa-aura-item.active {
     background-color: #3a3a3a;
     border-left: 3px solid #ffcc00; 
 }
-.wa-aura-item.active .wa-aura-name {
+.fa-aura-item.active .fa-aura-name {
     color: #ffcc00;
 }
 
-.wa-aura-icon {
+.fa-aura-icon {
     width: 24px;
     height: 24px;
     min-width: 24px; 
@@ -139,23 +168,23 @@
 }
 
 /* CONTROLS (Expandable Area) */
-.wa-aura-controls {
+.fa-aura-controls {
     padding: 8px 10px;
     background: #252525;
     border-top: 1px solid #444;
 }
 
-.wa-control-row {
+.fa-control-row {
     display: flex;
     margin-bottom: 5px;
 }
-.wa-control-row.buttons {
+.fa-control-row.buttons {
     margin-bottom: 0;
     justify-content: space-between;
 }
 
 /* Rename Input */
-.wa-rename-input {
+.fa-rename-input {
     width: 100%;
     background: #111;
     border: 1px solid #555;
@@ -164,13 +193,13 @@
     font-family: inherit;
     font-size: 12px;
 }
-.wa-rename-input:focus {
+.fa-rename-input:focus {
     border-color: #ffcc00;
     outline: none;
 }
 
 /* Tiny Buttons */
-.wa-tiny-btn {
+.fa-tiny-btn {
     background: #333;
     border: 1px solid #555;
     color: #ccc;
@@ -184,20 +213,20 @@
     align-items: center;
     gap: 4px;
 }
-.wa-tiny-btn:last-child { margin-right: 0; }
-.wa-tiny-btn:hover {
+.fa-tiny-btn:last-child { margin-right: 0; }
+.fa-tiny-btn:hover {
     background: #444;
     border-color: #888;
     color: #fff;
 }
 
 /* Header Action Buttons */
-.wa-header-actions {
+.fa-header-actions {
     display: flex;
     gap: 5px;
 }
 
-.wa-btn-icon {
+.fa-btn-icon {
     background: transparent;
     border: none;
     color: #aaa;
@@ -205,16 +234,16 @@
     font-size: 14px;
     padding: 0 5px;
 }
-.wa-btn-icon:hover { color: #fff; text-shadow: 0 0 5px white; }
+.fa-btn-icon:hover { color: #fff; text-shadow: 0 0 5px white; }
 
 /* RIGHT CONTENT */
-.wa-main-container {
+.fa-main-container {
     flex: 1;
     display: flex;
     background-color: #1a1a1a;
 }
 
-.wa-editor-container {
+.fa-editor-container {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -224,13 +253,13 @@
     position: relative; /* For absolute positioning of footer */
 }
 
-.wa-tabs {
+.fa-tabs {
     display: flex;
     background-color: #2b2b2b;
     border-bottom: 1px solid #000;
 }
 
-.wa-tab-item {
+.fa-tab-item {
     padding: 8px 16px;
     cursor: pointer;
     border-right: 1px solid #111;
@@ -239,17 +268,17 @@
     font-weight: 500;
 }
 
-.wa-tab-item:hover {
+.fa-tab-item:hover {
     color: #ddd;
 }
 
-.wa-tab-item.active {
+.fa-tab-item.active {
     background-color: #333;
     color: #ffcc00;
     border-bottom: 2px solid #ffcc00;
 }
 
-.wa-settings-panel {
+.fa-settings-panel {
     padding: 20px;
     box-sizing: border-box; /* Fix width issues */
     display: flex;
@@ -259,7 +288,7 @@
     position: relative; /* Ensure absolute positioned file-picker buttons are contained */
 }
 
-.wa-settings-scroll {
+.fa-settings-scroll {
     overflow-y: auto;
     scrollbar-width: thin;
     flex: 1; /* Fill available space and make content scrollable */
@@ -267,21 +296,21 @@
     padding-bottom: 200px; /* Reserve space for the footer so content scrolls above it */
 }
 
-.wa-settings-panel .form-group {
+.fa-settings-panel .form-group {
     margin-bottom: 15px;
     /* Ensure flex children don't overflow */
 }
 
-.wa-settings-panel label {
+.fa-settings-panel label {
     font-weight: normal;
     color: #ffcc00; /* WA uses gold labels mainly */
     display: block;
     margin-bottom: 4px;
 }
 
-.wa-settings-panel input[type="text"],
-.wa-settings-panel select,
-.wa-settings-panel textarea {
+.fa-settings-panel input[type="text"],
+.fa-settings-panel select,
+.fa-settings-panel textarea {
     background-color: #111;
     color: #eee;
     border: 1px solid #444;
@@ -295,8 +324,7 @@
     z-index: 100; /* Ensure dropdowns appear above other elements */
 }
 
-/* Range (slider) visual improvements and reverse-orientation helper */
-.wa-settings-panel input[type="range"],
+.fa-settings-panel input[type="range"],
 #foundry-auras-editor input[type="range"],
 .form-application#foundry-auras-editor input[type="range"] {
     -webkit-appearance: none;
@@ -307,7 +335,8 @@
     border-radius: 4px;
     outline: none;
 }
-.wa-settings-panel input[type="range"]::-webkit-slider-thumb {
+
+.fa-settings-panel input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 14px;
@@ -317,7 +346,8 @@
     border-radius: 2px;
     cursor: pointer;
 }
-.wa-settings-panel input[type="range"]::-moz-range-thumb {
+
+.fa-settings-panel input[type="range"]::-moz-range-thumb {
     width: 14px;
     height: 14px;
     background: #ffcc00;
@@ -326,26 +356,26 @@
     cursor: pointer;
 }
 
-.wa-settings-panel textarea {
+.fa-settings-panel textarea {
     height: auto;
     min-height: 100px;
 }
 
-.wa-settings-panel input[type="text"]:focus,
-.wa-settings-panel select:focus,
-.wa-settings-panel textarea:focus {
+.fa-settings-panel input[type="text"]:focus,
+.fa-settings-panel select:focus,
+.fa-settings-panel textarea:focus {
     border-color: #ffcc00;
     outline: none;
 }
 
 /* File Picker Integration - Let Foundry handle file-pickers naturally */
 /* 文件选择器集成 - 让Foundry自然处理文件选择器 */
-.wa-settings-panel .flexrow {
+.fa-settings-panel .flexrow {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.wa-settings-panel .flexrow input[type="text"] {
+.fa-settings-panel .flexrow input[type="text"] {
     flex: 1;
     padding-right: 36px; /* make room visually but don't force absolute placement */
     box-sizing: border-box;
@@ -353,10 +383,10 @@
 /* Prefer styling the file-picker element itself; do not force internal buttons to absolute positioning
    as Foundry may render file-picker control outside the local DOM. Keep it inline so it stays
    adjacent to the input rather than overlapping the footer. */
-.wa-settings-panel file-picker,
-.wa-settings-panel .file-picker,
-.wa-settings-panel button.file-picker,
-.wa-settings-panel button.filepicker {
+.fa-settings-panel file-picker,
+.fa-settings-panel .file-picker,
+.fa-settings-panel button.file-picker,
+.fa-settings-panel button.filepicker {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -364,10 +394,6 @@
     position: static !important;
     z-index: 3;
 }
-
-/* Audio control group - mirror icon/file-picker layout so it stays inside the scroll area
-   and does not get covered by the footer. Keep controls inline and responsive. */
-/* Audio group removed */
 
 /* Ensure global file-picker controls remain visible even if Foundry moves them in the DOM.
    Give them sufficient z-index and readable styles so they don't disappear behind the footer. */
@@ -388,11 +414,11 @@ file-picker {
 }
 
 /* 强制覆盖 Foundry 运行时可能注入的内联样式，确保 file-picker 的按钮保持在滚动区内且可见 */
-.wa-settings-panel file-picker,
-.wa-settings-panel file-picker *,
-.wa-settings-panel file-picker button,
-.wa-settings-panel file-picker .fa,
-.wa-settings-panel file-picker .fa-icon {
+.fa-settings-panel file-picker,
+.fa-settings-panel file-picker *,
+.fa-settings-panel file-picker button,
+.fa-settings-panel file-picker .fa,
+.fa-settings-panel file-picker .fa-icon {
     position: relative !important;
     z-index: 1000 !important; /* 明确高于 footer */
     margin-left: 6px !important;
@@ -400,83 +426,83 @@ file-picker {
 }
 
 /* 如果 Foundry 将 file-picker 的按钮 absolute 放置，强制让其回流到父容器，不再脱离滚动流 */
-.wa-settings-panel file-picker[style],
-.wa-settings-panel file-picker[style] * {
+.fa-settings-panel file-picker[style],
+.fa-settings-panel file-picker[style] * {
     position: relative !important;
 }
 
 /* Fix Dropdown Visibility */
-.wa-settings-panel option {
+.fa-settings-panel option {
     background-color: #111;
     color: #eee;
     padding: 10px;
 }
 
 /* Script Helper sidebar */
-.wa-script-container {
+.fa-script-container {
     display: flex;
     height: 100%;
     gap: 10px;
 }
-.wa-script-editor {
+.fa-script-editor {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
-.wa-script-helper {
+.fa-script-helper {
     width: 250px;
     background: #222;
     border: 1px solid #444;
     display: flex;
     flex-direction: column;
 }
-.wa-helper-search {
+.fa-helper-search {
     padding: 8px;
     border-bottom: 1px solid #444;
 }
-.wa-helper-search input {
+.fa-helper-search input {
     width: 100%;
     background: #111;
     border: 1px solid #555;
     color: #eee;
     padding: 4px;
 }
-.wa-helper-list {
+.fa-helper-list {
     flex: 1;
     overflow-y: auto;
     padding: 0;
     margin: 0;
     list-style: none;
 }
-.wa-helper-item {
+.fa-helper-item {
     padding: 6px 10px;
     cursor: pointer;
     border-bottom: 1px solid #2a2a2a;
     font-size: 11px;
     color: #aaa;
 }
-.wa-helper-item:hover {
+.fa-helper-item:hover {
     background: #333;
     color: #fff;
 }
-.wa-helper-name {
+.fa-helper-name {
     color: #ffcc00;
     font-weight: bold;
     margin-bottom: 2px;
 }
-.wa-helper-code {
+.fa-helper-code {
     font-family: monospace;
     color: #8bb;
 }
 
-.wa-settings-panel .notes {
+.fa-settings-panel .notes {
     color: #888;
     font-size: 0.9em;
     margin-top: 4px;
     font-style: italic;
 }
 
-.wa-btn {
+.fa-btn {
     background: #222;
     border: 1px solid #444;
     color: #ddd;
@@ -485,15 +511,15 @@ file-picker {
     border-radius: 0;
     transition: all 0.2s;
 }
-.wa-btn:hover { 
+.fa-btn:hover { 
     background: #333; 
     border-color: #ffcc00;
     color: #fff;
 }
 
 /* Footer Actions */
-.wa-footer-actions {
-    position: absolute; /* Pin to bottom of .wa-settings-panel */
+.fa-footer-actions {
+    position: absolute; /* Pin to bottom of .fa-settings-panel */
     left: 0;
     right: 0;
     bottom: 0;
@@ -510,7 +536,7 @@ file-picker {
 }
 
 /* Footer buttons: make the two action buttons occupy the right half evenly */
-.wa-footer-actions > .wa-tiny-btn {
+.fa-footer-actions > .fa-tiny-btn {
     flex: 1 1 48%;
     max-width: 48%;
     box-sizing: border-box;
@@ -520,11 +546,11 @@ file-picker {
 }
 
 /* Style variants for footer buttons */
-.wa-footer-actions > .wa-footer-save { color: #4f4; }
-.wa-footer-actions > .wa-footer-delete { color: #f44; }
+.fa-footer-actions > .fa-footer-save { color: #4f4; }
+.fa-footer-actions > .fa-footer-delete { color: #f44; }
 
 /* Empty State & Presets */
-.wa-empty-state {
+.fa-empty-state {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -536,7 +562,7 @@ file-picker {
 }
 
 /* PRESETS GRID */
-.wa-preset-grid {
+.fa-preset-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
     gap: 15px;
@@ -547,7 +573,7 @@ file-picker {
     margin: 0 auto;
 }
 
-.wa-preset-item {
+.fa-preset-item {
     display: flex;
     align-items: center;
     background: #2b2b2b;
@@ -558,14 +584,14 @@ file-picker {
     height: 60px;
 }
 
-.wa-preset-item:hover {
+.fa-preset-item:hover {
     background: #333;
     border-color: #ffcc00;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
 }
 
-.wa-preset-icon {
+.fa-preset-icon {
     width: 40px;
     height: 40px;
     background-size: cover;
@@ -575,14 +601,14 @@ file-picker {
     flex-shrink: 0;
 }
 
-.wa-preset-info {
+.fa-preset-info {
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.wa-preset-title {
+.fa-preset-title {
     color: #eee;
     font-weight: bold;
     font-size: 14px;
@@ -590,7 +616,7 @@ file-picker {
     text-align: left;
 }
 
-.wa-preset-desc {
+.fa-preset-desc {
     color: #888;
     font-size: 11px;
     line-height: 1.2;
@@ -770,14 +796,14 @@ input[type="color"] {
 }
 
 /* Progress Bar Styles */
-.wa-progressbar-wrapper {
+.fa-progressbar-wrapper {
     position: absolute;
     display: flex;
     align-items: center; /* Align icon and bar */
     pointer-events: none;
 }
 
-.wa-progress-bg {
+.fa-progress-bg {
     position: relative;
     flex: 1; /* Take remaining space */
     border: 1px solid #000;
@@ -785,11 +811,11 @@ input[type="color"] {
     box-shadow: 0 0 4px #000;
 }
 
-.wa-progress-fill {
+.fa-progress-fill {
     transition: width 0.2s ease-out;
 }
 
-.wa-bar-text {
+.fa-bar-text {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -803,7 +829,7 @@ input[type="color"] {
     pointer-events: none;
 }
 
-.wa-bar-icon {
+.fa-bar-icon {
     width: 32px; /* Smaller icon for bar */
     height: 32px;
     margin-right: 5px;
@@ -812,7 +838,7 @@ input[type="color"] {
 }
 
 /* Preview Mode Styles */
-.aura-display.wa-preview {
+.aura-display.fa-preview {
     pointer-events: auto;
     cursor: move;
     border: 1px dashed rgba(255, 255, 255, 0.5);
@@ -821,7 +847,7 @@ input[type="color"] {
     padding: 5px;
 }
 
-.aura-display.wa-preview:hover {
+.aura-display.fa-preview:hover {
     border-color: #ff9800;
     z-index: 1000;
 }
@@ -957,5 +983,3 @@ input[type="text"]:focus {
     font-size: 11px;
     color: #ccc;
 }
-
-
