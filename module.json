@@ -16,7 +16,8 @@
   "esmodules": [
     "main.js",
     "scripts/cooldowns.js",
-    "scripts/cooldowns_integration.js"
+    "scripts/cooldowns_integration.js",
+    "scripts/cooldowns_settings.js"
   ],
   "styles": [
     "styles.css"
