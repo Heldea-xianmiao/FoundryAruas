@@ -32,7 +32,13 @@ export class CooldownsSettings extends FormApplication {
       ev.preventDefault();
       const data = this._getSubmitData();
       let map;
-      try { map = JSON.parse(data.mapping); } catch (e) { return ui.notifications.error('映射 JSON 解析失败: ' + e.message); }
+      try { map = JSON.parse(data.mapping); } catch (e) { 
+        // 映射 JSON 解析失败
+        // Mapping JSON parse failed
+        return ui.notifications.error('映射 JSON 解析失败: ' + e.message);
+      }
+      // 显示已加载条数
+      // Show loaded mapping count
       ui.notifications.info('当前映射已加载 (' + Object.keys(map).length + ' 条)');
     });
   }
@@ -43,6 +49,8 @@ export class CooldownsSettings extends FormApplication {
       const mapping = JSON.parse(formData.mapping || '{}');
       await game.settings.set('FoundryAuras', 'cooldowns.mapping', mapping);
     } catch (e) {
+      // 保存失败：映射 JSON 无效
+      // Save failed: mapping JSON invalid
       return ui.notifications.error('保存失败：映射 JSON 无效：' + e.message);
     }
     await game.settings.set('FoundryAuras', 'cooldowns.enableIntegration', !!formData.enabled);
@@ -53,6 +61,8 @@ export class CooldownsSettings extends FormApplication {
 
 // Register settings and menu on init
 Hooks.once('init', () => {
+  // Register setting: enable integration
+  // Register setting: enable dnd5e integration
   game.settings.register('FoundryAuras', 'cooldowns.enableIntegration', {
     name: 'FOUNDRYAURAS.Settings.Cooldowns.Enable.Name',
     hint: 'FOUNDRYAURAS.Settings.Cooldowns.Enable.Hint',
@@ -62,6 +72,7 @@ Hooks.once('init', () => {
     default: true
   });
 
+  // Register setting: use global storage
   game.settings.register('FoundryAuras', 'cooldowns.useGlobalStorage', {
     name: 'FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Name',
     hint: 'FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Hint',
@@ -71,6 +82,7 @@ Hooks.once('init', () => {
     default: false
   });
 
+  // Register setting: global storage object
   game.settings.register('FoundryAuras', 'cooldowns.globalStorage', {
     name: 'FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Name',
     hint: 'FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Hint',
@@ -80,6 +92,7 @@ Hooks.once('init', () => {
     default: {}
   });
 
+  // Register setting: default mapping
   game.settings.register('FoundryAuras', 'cooldowns.mapping', {
     name: 'FOUNDRYAURAS.Settings.Cooldowns.Mapping.Name',
     hint: 'FOUNDRYAURAS.Settings.Cooldowns.Mapping.Hint',
@@ -92,6 +105,7 @@ Hooks.once('init', () => {
     }
   });
 
+  // Register menu: Cooldowns settings UI
   game.settings.registerMenu('FoundryAuras', 'cooldownsSettings', {
     name: game.i18n.localize('FOUNDRYAURAS.Settings.Cooldowns.MenuName') || 'Cooldowns 设置',
     label: game.i18n.localize('FOUNDRYAURAS.Settings.Cooldowns.MenuLabel') || 'Cooldowns',
