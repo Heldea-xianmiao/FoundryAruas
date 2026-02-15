@@ -131,6 +131,8 @@ await import('/modules/FoundryAuras/scripts/test_cooldowns_manual.js');
 
 说明：这些脚本设计为在 Foundry 环境中运行，它们会尝试查找当前选中 token 的 actor 并执行设置/查询/清理冷却的操作。如果在非 Foundry 环境运行，会记录错误信息。
 
+附注：你也可以在模块的 Manager 页面（打开配置 IDE）顶部工具栏中点击秒表图标直接打开 Cooldowns 设置面板；在设置中可启用“全局存储”以将冷却信息写入 `game.settings` 便于导出与诊断。
+
 ### 与 dnd5e 的可选集成
 
 模块提供一个可选的集成脚本 `scripts/cooldowns_integration.js`，用于把物品/技能使用自动映射为冷却：

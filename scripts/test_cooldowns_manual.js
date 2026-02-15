@@ -1,3 +1,43 @@
+// Manual test script for Cooldowns
+(async () => {
+  if (!window.FoundryAuras?.Cooldowns) {
+    console.warn('FoundryAuras.Cooldowns 未就绪，等候 1 秒后再试');
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  const C = window.FoundryAuras?.Cooldowns;
+  if (!C) return console.error('Cooldowns API 未找到');
+
+  let actor = null;
+  if (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) {
+    actor = canvas.tokens.controlled[0].actor;
+  }
+  if (!actor && game.user.character) actor = game.user.character;
+  if (!actor) actor = game.actors.contents[0];
+  if (!actor) return console.error('未找到 actor，无法测试');
+
+  console.log('开始 Cooldowns 手动测试, actor=', actor.name);
+  await C.setCooldown(actor, 'test.short', 3);
+  console.log('设置 test.short 为 3s');
+  console.log('立即剩余:', C.getRemaining(actor, 'test.short'));
+
+  await new Promise(r => setTimeout(r, 3500));
+  console.log('等待 3.5s 后，剩余:', C.getRemaining(actor, 'test.short'));
+
+  // 触发 purgeExpired 并检查 actor flag
+  await C.purgeExpired();
+  const flags = actor.getFlag('FoundryAuras','cooldowns') || {};
+  console.log('actor flags after purge:', flags);
+
+  // 如果启用了全局存储，打印全局映射
+  try {
+    const useGlobal = game.settings.get('FoundryAuras','cooldowns.useGlobalStorage');
+    if (useGlobal) {
+      const map = game.settings.get('FoundryAuras','cooldowns.globalStorage') || {};
+      console.log('global cooldown storage:', map[actor.id]);
+    }
+  } catch(e) { /* ignore */ }
+
+})();
 /* 手动测试脚本：在 Foundry 控制台执行
    - 测试 setCooldown / getRemaining / isOnCooldown / purgeExpired 基本行为
 */

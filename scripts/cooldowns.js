@@ -22,6 +22,54 @@ Hooks.once('ready', async () => {
   }, 60_000);
 });
 
+// Helper: 是否启用全局持久化
+function _useGlobalStorage() {
+  try {
+    return !!game.settings.get('FoundryAuras', 'cooldowns.useGlobalStorage');
+  } catch (e) {
+    return false;
+  }
+}
+
+// Helper: 获取模块全局映射对象
+function _getGlobalMapping() {
+  try {
+    return game.settings.get('FoundryAuras', 'cooldowns.globalStorage') || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+async function _setGlobalMapping(map) {
+  try {
+    await game.settings.set('FoundryAuras', 'cooldowns.globalStorage', map || {});
+  } catch (e) {
+    console.warn('FoundryAuras | Failed to write global cooldown storage', e);
+  }
+}
+
+async function _updateGlobalForActor(actor, cur) {
+  if (!_useGlobalStorage()) return;
+  const map = _getGlobalMapping();
+  if (!cur || Object.keys(cur).length === 0) {
+    // remove
+    delete map[actor.id];
+  } else {
+    map[actor.id] = cur;
+  }
+  await _setGlobalMapping(map);
+}
+
+// 在 actor 删除时清理全局存储
+Hooks.on('deleteActor', async (actor) => {
+  if (!_useGlobalStorage()) return;
+  const map = _getGlobalMapping();
+  if (map && map[actor.id]) {
+    delete map[actor.id];
+    await _setGlobalMapping(map);
+  }
+});
+
 async function _resolveActor(actor) {
   if (!actor) return null;
   if (typeof actor === 'string') return game.actors.get(actor) || game.actors.getName(actor) || null;
@@ -37,14 +85,23 @@ async function setCooldown(actorRef, key, seconds) {
   const cur = (actor.getFlag('FoundryAuras', 'cooldowns') || {});
   cur[key] = expires;
   await actor.setFlag('FoundryAuras', 'cooldowns', cur);
+  // 可选：同步到模块全局存储，便于导出/诊断
+  try { await _updateGlobalForActor(actor, cur); } catch (e) { /* ignore */ }
   return expires;
 }
 
 function getRemaining(actorRef, key) {
   const actor = (actorRef instanceof Actor) ? actorRef : (actorRef?.actor || null);
   if (!actor) return 0;
+  // 优先从 actor flag 获取
   const cur = (actor.getFlag('FoundryAuras', 'cooldowns') || {});
-  const expires = cur?.[key];
+  let expires = cur?.[key];
+  // 回退到全局存储（如果启用并且 actor flag 中未找到）
+  if ((!expires || expires <= 0) && _useGlobalStorage()) {
+    const map = _getGlobalMapping();
+    const actorMap = map?.[actor.id] || {};
+    expires = actorMap?.[key] || expires;
+  }
   if (!expires) return 0;
   const rem = Math.ceil(Math.max(0, expires - Date.now()) / 1000);
   return rem;
@@ -72,6 +129,7 @@ async function purgeExpired() {
     if (changed) {
       try {
         await a.setFlag('FoundryAuras', 'cooldowns', cur);
+        try { await _updateGlobalForActor(a, cur); } catch (e) { /* ignore */ }
       } catch (e) {
         console.warn('Failed to purge cooldowns for actor', a.id, e);
       }

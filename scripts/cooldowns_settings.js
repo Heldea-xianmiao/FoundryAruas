@@ -1,6 +1,6 @@
 export class CooldownsSettings extends FormApplication {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'foundry-auras-cooldowns-settings',
       title: game.i18n.localize('FOUNDRYAURAS.Settings.Cooldowns.Title') || 'FoundryAuras - Cooldowns 设置',
       template: 'modules/FoundryAuras/templates/cooldowns-settings.hbs',
@@ -17,15 +17,18 @@ export class CooldownsSettings extends FormApplication {
   async getData() {
     const enabled = game.settings.get('FoundryAuras', 'cooldowns.enableIntegration');
     const mapping = game.settings.get('FoundryAuras', 'cooldowns.mapping');
+    const useGlobal = game.settings.get('FoundryAuras', 'cooldowns.useGlobalStorage');
     return {
       enabled,
+      useGlobalStorage: !!useGlobal,
       mapping: JSON.stringify(mapping, null, 2)
     };
   }
 
   activateListeners(html) {
     super.activateListeners(html);
-    html.find('button[data-action="test"]').on('click', async (ev) => {
+    const btn = html[0]?.querySelector('button[data-action="test"]');
+    if (btn) btn.addEventListener('click', async (ev) => {
       ev.preventDefault();
       const data = this._getSubmitData();
       let map;
@@ -43,6 +46,7 @@ export class CooldownsSettings extends FormApplication {
       return ui.notifications.error('保存失败：映射 JSON 无效：' + e.message);
     }
     await game.settings.set('FoundryAuras', 'cooldowns.enableIntegration', !!formData.enabled);
+    await game.settings.set('FoundryAuras', 'cooldowns.useGlobalStorage', !!formData.useGlobalStorage);
     ui.notifications.info('FoundryAuras: Cooldowns 设置已保存');
   }
 }
@@ -56,6 +60,24 @@ Hooks.once('init', () => {
     config: false,
     type: Boolean,
     default: true
+  });
+
+  game.settings.register('FoundryAuras', 'cooldowns.useGlobalStorage', {
+    name: 'FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Name',
+    hint: 'FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Hint',
+    scope: 'world',
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register('FoundryAuras', 'cooldowns.globalStorage', {
+    name: 'FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Name',
+    hint: 'FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Hint',
+    scope: 'world',
+    config: false,
+    type: Object,
+    default: {}
   });
 
   game.settings.register('FoundryAuras', 'cooldowns.mapping', {

@@ -5,6 +5,7 @@
 
 import { AURA_PRESETS } from "./presets.js";
 import { API_DOCS } from "./api-docs.js";
+import { CooldownsSettings } from "./cooldowns_settings.js";
 
 export class AuraManager extends FormApplication {
     constructor(object, options) {
@@ -293,6 +294,18 @@ export class AuraManager extends FormApplication {
             isDisplayTab: this.activeTab === "display",
             isTriggerTab: this.activeTab === "trigger",
             isLoadTab: this.activeTab === "load"
+            ,
+            // Cooldowns context: 当前选中 token 的 actor 的冷却映射（供模板展示）
+            cooldownsActorId: (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor?.id : (game.user.character?.id || null),
+            cooldowns: (() => {
+                try {
+                    const aid = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor?.id : (game.user.character?.id || null);
+                    if (!aid) return {};
+                    const actor = game.actors.get(aid);
+                    if (!actor) return {};
+                    return actor.getFlag('FoundryAuras','cooldowns') || {};
+                } catch (e) { return {}; }
+            })()
         };
     }
 
@@ -487,6 +500,60 @@ export class AuraManager extends FormApplication {
                  console.error("FoundryAuras | Tour Start Failed:", e);
                  ui.notifications.warn("Tour failed to start.");
              }
+        });
+
+        const cooldownsBtn = root.querySelector('button[data-action="cooldowns"]');
+        if (cooldownsBtn) cooldownsBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            try {
+                const app = new CooldownsSettings();
+                app.render(true);
+            } catch (e) {
+                console.error('FoundryAuras | Failed to open Cooldowns settings', e);
+                ui.notifications.error('无法打开 Cooldowns 设置');
+            }
+        });
+
+        // Manager 内集成的 Cooldowns 面板交互
+        const cdSetBtn = root.querySelector('button[data-action="cd-set"]');
+        if (cdSetBtn) cdSetBtn.addEventListener('click', async (ev) => {
+            ev.preventDefault();
+            const keyInput = root.querySelector('input[name="cd-key-input"]');
+            const secInput = root.querySelector('input[name="cd-seconds-input"]');
+            const key = keyInput?.value?.trim();
+            const seconds = Number(secInput?.value) || 0;
+            if (!key || !seconds) return ui.notifications.warn('请提供有效的键与秒数');
+            try {
+                const actor = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor : (game.user.character || null);
+                if (!actor) return ui.notifications.warn('未找到 actor');
+                await window.FoundryAuras?.Cooldowns?.setCooldown(actor, key, seconds);
+                ui.notifications.info(`已为 ${actor.name} 设置 ${key} ${seconds}s 冷却`);
+                this.render();
+            } catch (e) { console.error(e); ui.notifications.error('设置冷却失败'); }
+        });
+
+        const cdPurgeBtn = root.querySelector('button[data-action="cd-purge"]');
+        if (cdPurgeBtn) cdPurgeBtn.addEventListener('click', async (ev) => {
+            ev.preventDefault();
+            try {
+                await window.FoundryAuras?.Cooldowns?.purgeExpired();
+                ui.notifications.info('已清理过期冷却');
+                this.render();
+            } catch (e) { console.error(e); ui.notifications.error('清理失败'); }
+        });
+
+        root.querySelectorAll('button[data-action="cd-clear"]').forEach(btn => {
+            btn.addEventListener('click', async (ev) => {
+                const key = ev.currentTarget.dataset.key;
+                try {
+                    const actor = (typeof canvas !== 'undefined' && canvas.tokens?.controlled?.length) ? canvas.tokens.controlled[0].actor : (game.user.character || null);
+                    if (!actor) return ui.notifications.warn('未找到 actor');
+                    // 通过设置为 0 来清除
+                    await window.FoundryAuras?.Cooldowns?.setCooldown(actor, key, 0);
+                    ui.notifications.info(`已清除 ${key}`);
+                    this.render();
+                } catch (e) { console.error(e); ui.notifications.error('清除失败'); }
+            });
         });
 
         const createBtn = root.querySelector('button[data-action="create"]');

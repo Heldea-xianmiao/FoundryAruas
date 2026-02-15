@@ -157,4 +157,25 @@
     "FOUNDRYAURAS.Op.EQ": "等于 (==)",
     "FOUNDRYAURAS.Op.NE": "不等于 (!=)",
     "FOUNDRYAURAS.Op.Contains": "包含 (文本)"
+    ,
+    "FOUNDRYAURAS.Settings.Cooldowns.Title": "Cooldowns 设置",
+    "FOUNDRYAURAS.Settings.Cooldowns.Enable.Name": "启用 dnd5e 自动映射",
+    "FOUNDRYAURAS.Settings.Cooldowns.Enable.Hint": "启用后，模块会尝试将 dnd5e 的物品使用映射为冷却（可在映射中自定义）。",
+    "FOUNDRYAURAS.Settings.Cooldowns.Mapping.Name": "物品/技能 -> 冷却 映射 (JSON)",
+    "FOUNDRYAURAS.Settings.Cooldowns.Mapping.Hint": "键为物品名称，值为冷却秒数。例如 {\"Fireball\": 60}。",
+    "FOUNDRYAURAS.Settings.Cooldowns.MenuName": "Cooldowns 设置",
+    "FOUNDRYAURAS.Settings.Cooldowns.MenuLabel": "Cooldowns",
+    "FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Name": "启用全局存储",
+    "FOUNDRYAURAS.Settings.Cooldowns.UseGlobalStorage.Hint": "将冷却信息写入模块全局设置以便跨会话查看或导出。",
+    "FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Name": "模块全局冷却存储",
+    "FOUNDRYAURAS.Settings.Cooldowns.GlobalStorage.Hint": "模块用来持久化冷却信息的 JSON 对象（仅供调试）。",
+    "FOUNDRYAURAS.Settings.Cooldowns.TestButton": "测试映射",
+    "FOUNDRYAURAS.Settings.Cooldowns.SaveButton": "保存"
+    ,
+    "FOUNDRYAURAS.Cooldowns.Title": "冷却 (Cooldowns)",
+    "FOUNDRYAURAS.Cooldowns.CurrentFor": "当前冷却 (Actor ID)",
+    "FOUNDRYAURAS.Cooldowns.SetButton": "设置冷却",
+    "FOUNDRYAURAS.Cooldowns.PurgeButton": "清理过期",
+    "FOUNDRYAURAS.Cooldowns.Clear": "清除",
+    "FOUNDRYAURAS.Cooldowns.NoActor": "未选中指示物或无法识别 actor"
 }

@@ -6,6 +6,7 @@
             <span style="font-weight: bold; padding-left: 5px;">Foundry Auras</span>
             <div class="wa-header-actions">
                 <button type="button" class="wa-btn-icon" data-action="help" title="Tour / Help"><i class="fas fa-question-circle"></i></button>
+                <button type="button" class="wa-btn-icon" data-action="cooldowns" title="Cooldowns / 冷却"><i class="fas fa-stopwatch"></i></button>
                 <button type="button" class="wa-btn-icon" data-action="export-all" title="{{localize 'FOUNDRYAURAS.Manager.ExportAll'}}"><i class="fas fa-file-export"></i></button>
                 <button type="button" class="wa-btn-icon" data-action="import" title="{{localize 'FOUNDRYAURAS.Manager.Import'}}"><i class="fas fa-file-import"></i></button>
                 <button type="button" class="wa-btn-icon" data-action="create" title="{{localize 'FOUNDRYAURAS.Manager.New'}}"><i class="fas fa-plus"></i></button>
@@ -72,6 +73,30 @@
     <!-- RIGHT CONTENT: EDITOR -->
     <!-- 右侧内容: 编辑器 -->
     <main class="wa-main-container">
+        <!-- Cooldowns Panel (Integrated) -->
+        <section class="wa-cooldowns-panel">
+            <h3>{{localize "FOUNDRYAURAS.Cooldowns.Title"}}</h3>
+            {{#if cooldownsActorId}}
+            <p class="notes">{{localize "FOUNDRYAURAS.Cooldowns.CurrentFor"}}: {{cooldownsActorId}}</p>
+            <div class="wa-cooldowns-list">
+                {{#each (objectEntries cooldowns)}}
+                    <div class="wa-cooldown-item" data-key="{{this.[0]}}">
+                        <span class="cd-key">{{this.[0]}}</span>
+                        <span class="cd-remaining">{{../this.[1]}}</span>
+                        <button class="wa-tiny-btn" data-action="cd-clear" data-key="{{this.[0]}}">{{localize "FOUNDRYAURAS.Cooldowns.Clear"}}</button>
+                    </div>
+                {{/each}}
+            </div>
+            <div class="wa-cooldowns-actions">
+                <input type="text" name="cd-key-input" placeholder="spell.key" class="short-input" />
+                <input type="number" name="cd-seconds-input" placeholder="秒" class="short-input" min="0" />
+                <button class="btn" data-action="cd-set">{{localize "FOUNDRYAURAS.Cooldowns.SetButton"}}</button>
+                <button class="btn" data-action="cd-purge">{{localize "FOUNDRYAURAS.Cooldowns.PurgeButton"}}</button>
+            </div>
+            {{else}}
+            <p class="notes">{{localize "FOUNDRYAURAS.Cooldowns.NoActor"}}</p>
+            {{/if}}
+        </section>
         {{#if selectedAura}}
             <div class="wa-editor-container">
                 <!-- TABS -->
